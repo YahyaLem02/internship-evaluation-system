@@ -30,4 +30,7 @@ public class Stage {
             inverseJoinColumns = @JoinColumn(name = "id_stagiaire")
     )
     private Set<Stagiaire> stagiaires;
+    @OneToMany(mappedBy = "stage")
+    private Set<Periode> periodes;
+
 }

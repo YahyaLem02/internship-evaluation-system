@@ -1,7 +1,7 @@
 package org.example.backend.dto;
 
-
 import lombok.*;
+
 import java.util.Set;
 
 @Getter
@@ -9,8 +9,11 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppreciationDTO {
-    private Long idTuteur;
-    private Long idPeriode;
-    private Set<Long> evaluationIds; // IDs of related evaluations
-    private Set<Long> competenceIds; // IDs of related competences
+    private Long id;
+    private Long tuteurId;
+    private Long stagiaireId;
+    private Long stageId;
+
+    private Set<Long> evaluationIds;
+    private Set<Long> competenceIds;
 }

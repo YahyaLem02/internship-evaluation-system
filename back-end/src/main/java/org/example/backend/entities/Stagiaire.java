@@ -15,4 +15,7 @@ public class Stagiaire extends Personne {
 
     @ManyToMany(mappedBy = "stagiaires")
     private Set<Stage> stages;
+    @OneToMany(mappedBy = "stagiaire")
+    private Set<Periode> periodes;
+
 }
