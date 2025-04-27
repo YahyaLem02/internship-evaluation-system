@@ -3,6 +3,7 @@
   <component name="SweepGitChangeService">
     <option name="recentCommitSummaries">
       <list>
+        <option value="Set up backend project configuration by adding a new `SweepGitChanges.xml` file to track recent commit summaries, aiding in project organization and version control. Modified `compiler.xml` to update the Lombok annotation processor path, although the version reference was changed to &quot;unknown,&quot; which may require correction. These changes are part of the initial backend setup process." />
         <option value="Updated Lombok dependency version in `compiler.xml` to 1.18.36 to ensure compatibility and proper annotation processing during compilation. Added a new `.name` file with the content &quot;Periode.java&quot;, likely to define the project or module name, aiding in project organization. These changes support the ongoing task of finalizing the backend development." />
       </list>
     </option>
