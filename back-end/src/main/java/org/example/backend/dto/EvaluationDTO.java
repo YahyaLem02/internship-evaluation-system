@@ -4,13 +4,23 @@ package org.example.backend.dto;
 import lombok.*;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class EvaluationDTO {
     private Long id;
     private String categorie;
     private String valeur;
     private Long appreciationId; // ID of the related appreciation
+
+    // Constructor with all arguments
+
+    public EvaluationDTO(Long id, String categorie, String valeur, Long appreciationId) {
+        this.id = id;
+        this.categorie = categorie;
+        this.valeur = valeur;
+        this.appreciationId = appreciationId;
+    }
+    // Default constructor
+    public EvaluationDTO() {}
 
     public Long getId() {
         return id;

@@ -3,8 +3,7 @@ package org.example.backend.dto;
 
 import lombok.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class CategorieDTO {
     private Long id;
     private String intitule;
@@ -17,6 +16,14 @@ public class CategorieDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+    public CategorieDTO(Long id, String intitule, String valeur, Long competenceId) {
+        this.id = id;
+        this.intitule = intitule;
+        this.valeur = valeur;
+        this.competenceId = competenceId;
+    }
+    public CategorieDTO() {
     }
 
     public String getIntitule() {

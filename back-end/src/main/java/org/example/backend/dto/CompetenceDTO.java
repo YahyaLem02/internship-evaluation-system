@@ -4,16 +4,24 @@ package org.example.backend.dto;
 import lombok.*;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class CompetenceDTO {
     private Long id;
     private String intitule;
     private String note;
     private Long appreciationId; // ID of the related appreciation
     private Set<Long> categorieIds; // IDs of related categories
+
+    // Constructor with all arguments
+    public CompetenceDTO(Long id, String intitule, String note, Long appreciationId, Set<Long> categorieIds) {
+        this.id = id;
+        this.intitule = intitule;
+        this.note = note;
+        this.appreciationId = appreciationId;
+        this.categorieIds = categorieIds;
+    }
+    // Default constructor
+    public CompetenceDTO() {}
 
     public Long getId() {
         return id;

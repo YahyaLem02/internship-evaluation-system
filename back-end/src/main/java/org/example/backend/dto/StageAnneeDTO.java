@@ -5,12 +5,19 @@ import lombok.*;
 import java.util.Set;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class StageAnneeDTO {
     private Long id;
     private String anneeUniversitaire;
     private Set<Long> stageIds; // IDs of related stages
+    // Constructor with all arguments
+    public StageAnneeDTO(Long id, String anneeUniversitaire, Set<Long> stageIds) {
+        this.id = id;
+        this.anneeUniversitaire = anneeUniversitaire;
+        this.stageIds = stageIds;
+    }
+    // Default constructor
+    public StageAnneeDTO() {}
 
     public Long getId() {
         return id;

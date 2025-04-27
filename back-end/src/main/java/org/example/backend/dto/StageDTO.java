@@ -5,8 +5,7 @@ import lombok.*;
 import java.util.Set;
 
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class StageDTO {
     private Long id;
     private String description;
@@ -14,6 +13,17 @@ public class StageDTO {
     private String entreprise;
     private Long stageAnneeId; // ID of the related StageAnnee
     private Set<Long> stagiaireIds; // IDs of related stagiaires
+    // Constructor with all arguments
+    public StageDTO(Long id, String description, String objectif, String entreprise, Long stageAnneeId, Set<Long> stagiaireIds) {
+        this.id = id;
+        this.description = description;
+        this.objectif = objectif;
+        this.entreprise = entreprise;
+        this.stageAnneeId = stageAnneeId;
+        this.stagiaireIds = stagiaireIds;
+    }
+    // Default constructor
+    public StageDTO() {}
 
     public Long getId() {
         return id;

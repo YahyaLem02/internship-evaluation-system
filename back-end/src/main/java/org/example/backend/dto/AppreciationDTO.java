@@ -1,21 +1,29 @@
 package org.example.backend.dto;
 
-import lombok.*;
-
 import java.util.Set;
 
-
-@NoArgsConstructor
-@AllArgsConstructor
 public class AppreciationDTO {
     private Long id;
     private Long tuteurId;
     private Long stagiaireId;
     private Long stageId;
-
     private Set<Long> evaluationIds;
     private Set<Long> competenceIds;
 
+    // Constructor with all arguments
+    public AppreciationDTO(Long id, Long tuteurId, Long stagiaireId, Long stageId, Set<Long> evaluationIds, Set<Long> competenceIds) {
+        this.id = id;
+        this.tuteurId = tuteurId;
+        this.stagiaireId = stagiaireId;
+        this.stageId = stageId;
+        this.evaluationIds = evaluationIds;
+        this.competenceIds = competenceIds;
+    }
+
+    // Default constructor
+    public AppreciationDTO() {}
+
+    // Getters and setters
     public Long getId() {
         return id;
     }

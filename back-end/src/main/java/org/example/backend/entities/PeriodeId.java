@@ -8,16 +8,23 @@ import java.util.Objects;
 
 @Embeddable
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class PeriodeId implements Serializable {
     // Sans annotation @Id ou @GeneratedValue
     private Long stagiaireId;
     private Long stageId;
+    // Constructeur par défaut
+    public PeriodeId() {
+    }
+    // Constructeur avec tous les arguments
+    public PeriodeId(Long stagiaireId, Long stageId) {
+        this.stagiaireId = stagiaireId;
+        this.stageId = stageId;
+    }
 
     public Long getStagiaireId() {
         return stagiaireId;
     }
+
 
     @Override
     public boolean equals(Object o) {

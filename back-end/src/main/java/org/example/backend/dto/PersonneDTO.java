@@ -3,14 +3,24 @@ package org.example.backend.dto;
 
 import lombok.*;
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 public class PersonneDTO {
     private Long id;
     private String nom;
     private String prenom;
     private String email;
     private String motDePasse;
+
+    // Constructor with all arguments
+    public PersonneDTO(Long id, String nom, String prenom, String email, String motDePasse) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.motDePasse = motDePasse;
+    }
+    // Default constructor
+    public PersonneDTO() {}
 
     public Long getId() {
         return id;
