@@ -7,8 +7,6 @@ import lombok.*;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tuteur extends Personne {
@@ -16,4 +14,20 @@ public class Tuteur extends Personne {
 
     @OneToMany(mappedBy = "tuteur")
     private Set<Appreciation> appreciations;
+
+    public String getEntreprise() {
+        return entreprise;
+    }
+
+    public void setEntreprise(String entreprise) {
+        this.entreprise = entreprise;
+    }
+
+    public Set<Appreciation> getAppreciations() {
+        return appreciations;
+    }
+
+    public void setAppreciations(Set<Appreciation> appreciations) {
+        this.appreciations = appreciations;
+    }
 }

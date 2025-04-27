@@ -7,8 +7,7 @@ import lombok.*;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class StageAnnee {
@@ -20,4 +19,28 @@ public class StageAnnee {
 
     @OneToMany(mappedBy = "stageAnnee")
     private Set<Stage> stages;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getAnneeUniversitaire() {
+        return anneeUniversitaire;
+    }
+
+    public void setAnneeUniversitaire(String anneeUniversitaire) {
+        this.anneeUniversitaire = anneeUniversitaire;
+    }
+
+    public Set<Stage> getStages() {
+        return stages;
+    }
+
+    public void setStages(Set<Stage> stages) {
+        this.stages = stages;
+    }
 }
