@@ -7,8 +7,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-@Getter
-@Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class PeriodeId implements Serializable {
@@ -32,5 +31,17 @@ public class PeriodeId implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(stagiaireId, stageId);
+    }
+
+    public void setStagiaireId(Long stagiaireId) {
+        this.stagiaireId = stagiaireId;
+    }
+
+    public Long getStageId() {
+        return stageId;
+    }
+
+    public void setStageId(Long stageId) {
+        this.stageId = stageId;
     }
 }

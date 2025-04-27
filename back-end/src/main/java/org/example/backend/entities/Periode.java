@@ -6,8 +6,6 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Periode {
@@ -27,4 +25,44 @@ public class Periode {
 
     private LocalDate dateDebut;
     private LocalDate dateFin;
+
+    public PeriodeId getId() {
+        return id;
+    }
+
+    public void setId(PeriodeId id) {
+        this.id = id;
+    }
+
+    public Stagiaire getStagiaire() {
+        return stagiaire;
+    }
+
+    public void setStagiaire(Stagiaire stagiaire) {
+        this.stagiaire = stagiaire;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public LocalDate getDateDebut() {
+        return dateDebut;
+    }
+
+    public void setDateDebut(LocalDate dateDebut) {
+        this.dateDebut = dateDebut;
+    }
+
+    public LocalDate getDateFin() {
+        return dateFin;
+    }
+
+    public void setDateFin(LocalDate dateFin) {
+        this.dateFin = dateFin;
+    }
 }
