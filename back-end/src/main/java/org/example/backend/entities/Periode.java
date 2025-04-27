@@ -2,6 +2,7 @@ package org.example.backend.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDate;
 
 @Entity
@@ -10,17 +11,19 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Periode {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
+    @EmbeddedId
+    private PeriodeId id;
 
     @ManyToOne
-    @JoinColumn(name = "id_stage")
-    private Stage stage;
-
-    @ManyToOne
+    @MapsId("stagiaireId") // relie à la clé composite
     @JoinColumn(name = "id_stagiaire")
     private Stagiaire stagiaire;
+
+    @ManyToOne
+    @MapsId("stageId")
+    @JoinColumn(name = "id_stage")
+    private Stage stage;
 
     private LocalDate dateDebut;
     private LocalDate dateFin;

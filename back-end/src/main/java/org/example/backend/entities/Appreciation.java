@@ -19,7 +19,10 @@ public class Appreciation {
     private Tuteur tuteur;
 
     @ManyToOne
-    @JoinColumn(name = "id_periode")
+    @JoinColumns({
+            @JoinColumn(name = "stagiaire_id", referencedColumnName = "id_stagiaire"),
+            @JoinColumn(name = "stage_id", referencedColumnName = "id_stage")
+    })
     private Periode periode;
 
     @OneToMany(mappedBy = "appreciation")
