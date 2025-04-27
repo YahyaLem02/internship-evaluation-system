@@ -1,22 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './components/Home';
-import About from './pages/About';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import DashboardLayout from "./layouts/DashboardLayout";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
 
-function App() {
+export default function App() {
     return (
-        <Router>
-            <Header />
-            <main className="p-4">
-                <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/about" element={<About />} />
-                </Routes>
-            </main>
-            <Footer />
-        </Router>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/login" element={<Login />} />
+                {/* Route parent avec layout et Outlet */}
+                <Route element={<DashboardLayout />}>
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/profile" element={<Profile />} />
+                </Route>
+                <Route path="*" element={<div>Page non trouvée</div>} />
+            </Routes>
+        </BrowserRouter>
     );
 }
-
-export default App;

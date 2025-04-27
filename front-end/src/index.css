@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Optionnel : boost visuel glassmorphism */
+body {
+    background: linear-gradient(135deg, #f0f4ff 0%, #f7e1ff 100%);
+    min-height: 100vh;
+}
