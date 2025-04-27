@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SweepGitChangeService">
+    <option name="recentCommitSummaries">
+      <list>
+        <option value="Set up initial front-end project structure with React, React Router, and Tailwind CSS. Added `package-lock.json` to lock dependencies and updated `package.json` to include `react-router-dom`, `tailwindcss`, `postcss`, and `autoprefixer`. Replaced default Vite `App.jsx` content with a router-based layout including `Header`, `Footer`, `Home`, and `About` components. Created new files `Header.jsx`, `Footer.jsx`, `Home.jsx`, and `About.jsx` to structure the app. Replaced default styles in `index.css` with Tailwind CSS directives. Added `tailwind.config.js` for Tailwind configuration. Updated `eslint.config.js` to include Node.js globals. Added `jsLibraryMappings.xml` for IDE JavaScript library configuration." />
+      </list>
+    </option>
+  </component>
+</project>
