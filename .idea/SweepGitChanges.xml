@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SweepGitChangeService">
+    <option name="recentCommitSummaries">
+      <list>
+        <option value="Updated Lombok dependency version in `compiler.xml` to 1.18.36 to ensure compatibility and proper annotation processing during compilation. Added a new `.name` file with the content &quot;Periode.java&quot;, likely to define the project or module name, aiding in project organization. These changes support the ongoing task of finalizing the backend development." />
+      </list>
+    </option>
+  </component>
+</project>
