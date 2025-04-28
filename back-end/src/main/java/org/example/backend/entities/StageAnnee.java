@@ -16,6 +16,8 @@ public class StageAnnee {
     private Long id;
 
     private String anneeUniversitaire;
+    private String Description;
+    private String Regles;
 
     @OneToMany(mappedBy = "stageAnnee")
     private Set<Stage> stages;
@@ -42,5 +44,18 @@ public class StageAnnee {
 
     public void setStages(Set<Stage> stages) {
         this.stages = stages;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+    public void setDescription(String description) {
+        Description = description;
+    }
+    public String getRegles() {
+        return Regles;
+    }
+    public void setRegles(String regles) {
+        Regles = regles;
     }
 }

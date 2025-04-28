@@ -16,6 +16,11 @@ public class Stagiaire extends Personne {
     @OneToMany(mappedBy = "stagiaire")
     private Set<Periode> periodes;
 
+    public Stagiaire(String nom, String prenom, String email, String telephone, String institution) {
+        super(nom, prenom, email, telephone);
+        this.institution = institution;
+    }
+
     public String getInstitution() {
         return institution;
     }
