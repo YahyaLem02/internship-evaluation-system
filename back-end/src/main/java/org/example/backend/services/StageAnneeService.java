@@ -26,6 +26,9 @@ public class StageAnneeService {
     public StageAnneeDTO createStageAnnee(StageAnneeDTO stageAnneeDTO) {
         StageAnnee stageAnnee = new StageAnnee();
         stageAnnee.setAnneeUniversitaire(stageAnneeDTO.getAnneeUniversitaire());
+        stageAnnee.setDescription(stageAnneeDTO.getDescription());
+        stageAnnee.setRegles(stageAnneeDTO.getRegles());
+
 
         // Ajouter les stages associés à partir des IDs
         if (stageAnneeDTO.getStageIds() != null && !stageAnneeDTO.getStageIds().isEmpty()) {
@@ -36,25 +39,30 @@ public class StageAnneeService {
         }
 
         StageAnnee savedStageAnnee = stageAnneeRepository.save(stageAnnee);
-        return new StageAnneeDTO(savedStageAnnee.getId(), savedStageAnnee.getAnneeUniversitaire(), stageAnneeDTO.getStageIds());
+        return new StageAnneeDTO(savedStageAnnee.getId(), savedStageAnnee.getAnneeUniversitaire(), stageAnneeDTO.getStageIds(),
+                savedStageAnnee.getDescription(), savedStageAnnee.getRegles());
     }
 
     // Lire un StageAnnee par son ID
-    public StageAnneeDTO getStageAnnee(Long id) {
-        StageAnnee stageAnnee = stageAnneeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("StageAnnee not found"));
-        return new StageAnneeDTO(stageAnnee.getId(), stageAnnee.getAnneeUniversitaire(),
-                stageAnnee.getStages().stream().map(stage -> stage.getId()).collect(Collectors.toSet()));
-    }
+public StageAnneeDTO getStageAnnee(Long id) {
+    StageAnnee stageAnnee = stageAnneeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("StageAnnee not found"));
+    Set<Long> stageIds = stageAnnee.getStages().stream()
+            .map(Stage::getId)
+            .collect(Collectors.toSet());
+    return new StageAnneeDTO(stageAnnee.getId(), stageAnnee.getAnneeUniversitaire(),
+            stageIds, stageAnnee.getDescription(), stageAnnee.getRegles());
+}
 
     // Récupérer la liste de tous les StageAnnee
-    public List<StageAnneeDTO> getAllStageAnnees() {
-        List<StageAnnee> stageAnnees = stageAnneeRepository.findAll();
-        return stageAnnees.stream().map(stageAnnee ->
-                        new StageAnneeDTO(stageAnnee.getId(), stageAnnee.getAnneeUniversitaire(),
-                                stageAnnee.getStages().stream().map(stage -> stage.getId()).collect(Collectors.toSet())))
-                .collect(Collectors.toList());
-    }
+ public List<StageAnneeDTO> getAllStageAnnees() {
+    List<StageAnnee> stageAnnees = stageAnneeRepository.findAll();
+    return stageAnnees.stream().map(stageAnnee ->
+                    new StageAnneeDTO(stageAnnee.getId(), stageAnnee.getAnneeUniversitaire(),
+                            stageAnnee.getStages().stream().map(Stage::getId).collect(Collectors.toSet()),
+                            stageAnnee.getDescription(), stageAnnee.getRegles()))
+            .collect(Collectors.toList());
+}
 
     // Mise à jour d'un StageAnnee
     @Transactional
@@ -63,6 +71,9 @@ public class StageAnneeService {
                 .orElseThrow(() -> new RuntimeException("StageAnnee not found"));
 
         existingStageAnnee.setAnneeUniversitaire(stageAnneeDTO.getAnneeUniversitaire());
+        existingStageAnnee.setDescription(stageAnneeDTO.getDescription());
+        existingStageAnnee.setRegles(stageAnneeDTO.getRegles());
+
 
         // Mettre à jour les stages associés à partir des IDs
         if (stageAnneeDTO.getStageIds() != null && !stageAnneeDTO.getStageIds().isEmpty()) {
@@ -74,8 +85,8 @@ public class StageAnneeService {
         }
 
         StageAnnee updatedStageAnnee = stageAnneeRepository.save(existingStageAnnee);
-        return new StageAnneeDTO(updatedStageAnnee.getId(), updatedStageAnnee.getAnneeUniversitaire(),
-                stageAnneeDTO.getStageIds());
+      return new StageAnneeDTO(updatedStageAnnee.getId(), updatedStageAnnee.getAnneeUniversitaire(),
+        stageAnneeDTO.getStageIds(), updatedStageAnnee.getDescription(), updatedStageAnnee.getRegles());
     }
 
     // Suppression d'un StageAnnee

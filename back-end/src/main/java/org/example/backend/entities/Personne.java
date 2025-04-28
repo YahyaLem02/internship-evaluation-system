@@ -17,6 +17,15 @@ public abstract class Personne {
     private String email;
     private String motDePasse;
 
+    public Personne(String nom, String prenom, String email, String motDePasse) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.motDePasse = motDePasse;
+    }
+
+
+
     public Long getId() {
         return id;
     }
