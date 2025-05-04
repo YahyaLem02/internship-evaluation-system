@@ -44,11 +44,11 @@ export default function Dashboard() {
                 Bienvenue sur votre Dashboard
             </motion.h1>
 
-            <div className="flex justify-center">
+            <d fr className="flex justify-center">
                 <AnimatedButton onClick={() => setShow((v) => !v)}>
                     {show ? "Masquer les widgets" : "Afficher les widgets"}
                 </AnimatedButton>
-            </div>
+            </d>
 
             <AnimatePresence>
                 {show && (

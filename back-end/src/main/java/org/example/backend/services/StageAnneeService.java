@@ -1,5 +1,7 @@
 package org.example.backend.services;
 
+import org.example.backend.dto.StagiaireDTO;
+import org.example.backend.dto.StagiaireDetailDTO;
 import org.example.backend.entities.StageAnnee;
 import org.example.backend.dto.StageAnneeDTO;
 import org.example.backend.repositories.StageAnneeRepository;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +31,7 @@ public class StageAnneeService {
         stageAnnee.setAnneeUniversitaire(stageAnneeDTO.getAnneeUniversitaire());
         stageAnnee.setDescription(stageAnneeDTO.getDescription());
         stageAnnee.setRegles(stageAnneeDTO.getRegles());
+        stageAnnee.setShareToken(UUID.randomUUID().toString());
 
 
         // Ajouter les stages associés à partir des IDs
@@ -40,7 +44,7 @@ public class StageAnneeService {
 
         StageAnnee savedStageAnnee = stageAnneeRepository.save(stageAnnee);
         return new StageAnneeDTO(savedStageAnnee.getId(), savedStageAnnee.getAnneeUniversitaire(), stageAnneeDTO.getStageIds(),
-                savedStageAnnee.getDescription(), savedStageAnnee.getRegles());
+                savedStageAnnee.getDescription(), savedStageAnnee.getRegles(), savedStageAnnee.getShareToken());
     }
 
     // Lire un StageAnnee par son ID
@@ -51,7 +55,7 @@ public StageAnneeDTO getStageAnnee(Long id) {
             .map(Stage::getId)
             .collect(Collectors.toSet());
     return new StageAnneeDTO(stageAnnee.getId(), stageAnnee.getAnneeUniversitaire(),
-            stageIds, stageAnnee.getDescription(), stageAnnee.getRegles());
+            stageIds, stageAnnee.getDescription(), stageAnnee.getRegles(), stageAnnee.getShareToken());
 }
 
     // Récupérer la liste de tous les StageAnnee
@@ -60,7 +64,7 @@ public StageAnneeDTO getStageAnnee(Long id) {
     return stageAnnees.stream().map(stageAnnee ->
                     new StageAnneeDTO(stageAnnee.getId(), stageAnnee.getAnneeUniversitaire(),
                             stageAnnee.getStages().stream().map(Stage::getId).collect(Collectors.toSet()),
-                            stageAnnee.getDescription(), stageAnnee.getRegles()))
+                            stageAnnee.getDescription(), stageAnnee.getRegles(), stageAnnee.getShareToken()))
             .collect(Collectors.toList());
 }
 
@@ -86,7 +90,7 @@ public StageAnneeDTO getStageAnnee(Long id) {
 
         StageAnnee updatedStageAnnee = stageAnneeRepository.save(existingStageAnnee);
       return new StageAnneeDTO(updatedStageAnnee.getId(), updatedStageAnnee.getAnneeUniversitaire(),
-        stageAnneeDTO.getStageIds(), updatedStageAnnee.getDescription(), updatedStageAnnee.getRegles());
+        stageAnneeDTO.getStageIds(), updatedStageAnnee.getDescription(), updatedStageAnnee.getRegles(), updatedStageAnnee.getShareToken());
     }
 
     // Suppression d'un StageAnnee
@@ -95,5 +99,24 @@ public StageAnneeDTO getStageAnnee(Long id) {
         StageAnnee stageAnnee = stageAnneeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("StageAnnee not found"));
         stageAnneeRepository.delete(stageAnnee);
+    }
+    public List<StagiaireDetailDTO> getStudentsForStageAnnee(Long stageAnneeId) {
+        List<Stage> stages = stageRepository.findByStageAnneeId(stageAnneeId);
+
+        return stages.stream()
+                .flatMap(stage -> stage.getPeriodes().stream()
+                        .map(periode -> new StagiaireDetailDTO(
+                                periode.getStagiaire().getId(),
+                                periode.getStagiaire().getNom(),
+                                periode.getStagiaire().getPrenom(),
+                                periode.getStagiaire().getEmail(),
+                                periode.getStagiaire().getInstitution(),
+                                stage.getEntreprise(), // Pass the stage's entreprise
+                                periode.getDateDebut() != null ? periode.getDateDebut().toString() : null,
+                                periode.getDateFin() != null ? periode.getDateFin().toString() : null
+                        ))
+                )
+                .distinct() // Avoid duplicates if a student participates in multiple stages
+                .collect(Collectors.toList());
     }
 }
