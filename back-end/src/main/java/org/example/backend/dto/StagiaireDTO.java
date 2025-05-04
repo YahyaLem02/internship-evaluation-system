@@ -5,7 +5,6 @@ import lombok.*;
 import java.util.Set;
 
 
-@NoArgsConstructor
 @AllArgsConstructor
 public class StagiaireDTO extends PersonneDTO {
     private String institution;
@@ -17,6 +16,13 @@ public class StagiaireDTO extends PersonneDTO {
         this.institution = institution;
         this.stageIds = stageIds;
     }
+// Constructor with required arguments
+public StagiaireDTO(Long id, String nom, String prenom, String email, String institution) {
+    super(id, nom, prenom, email, null); // Pass null for motDePasse as it's not provided
+    this.institution = institution;
+    this.stageIds = null; // Initialize stageIds as null
+}
+
     // Default constructor
     public StagiaireDTO() {
         super();

@@ -5,8 +5,7 @@ import lombok.*;
 
 @MappedSuperclass
 
-@NoArgsConstructor
-@AllArgsConstructor
+
 public abstract class Personne {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +15,11 @@ public abstract class Personne {
     private String prenom;
     private String email;
     private String motDePasse;
+
+
+    public Personne() {
+        // Constructeur par défaut
+    }
 
     public Personne(String nom, String prenom, String email, String motDePasse) {
         this.nom = nom;

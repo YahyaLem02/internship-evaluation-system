@@ -1,29 +1,28 @@
 package org.example.backend.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDate;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 public class Periode {
 
     @EmbeddedId
     private PeriodeId id;
 
     @ManyToOne
-    @MapsId("stagiaireId") // relie à la clé composite
+    @MapsId("stagiaireId") // Relie à la clé composite
     @JoinColumn(name = "id_stagiaire")
     private Stagiaire stagiaire;
 
     @ManyToOne
-    @MapsId("stageId")
+    @MapsId("stageId") // Relie à la clé composite
     @JoinColumn(name = "id_stage")
     private Stage stage;
 
+    @Column(name = "date_debut", nullable = false)
     private LocalDate dateDebut;
+
+    @Column(name = "date_fin", nullable = false)
     private LocalDate dateFin;
 
     public PeriodeId getId() {

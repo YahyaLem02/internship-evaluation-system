@@ -21,6 +21,16 @@ public class StageAnnee {
 
     @OneToMany(mappedBy = "stageAnnee")
     private Set<Stage> stages;
+    @Column(unique = true)
+    private String shareToken;
+
+    public String getShareToken() {
+        return shareToken;
+    }
+    public void setShareToken(String shareToken) {
+        this.shareToken = shareToken;
+    }
+
 
     public Long getId() {
         return id;

@@ -1,13 +1,11 @@
 package org.example.backend.entities;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Set;
 
 @Entity
-
 @NoArgsConstructor
 @AllArgsConstructor
 public class Stage {
@@ -22,14 +20,8 @@ public class Stage {
     @ManyToOne
     private StageAnnee stageAnnee;
 
-    @ManyToMany
-    @JoinTable(
-            name = "periode",
-            joinColumns = @JoinColumn(name = "id_stage"),
-            inverseJoinColumns = @JoinColumn(name = "id_stagiaire")
-    )
-    private Set<Stagiaire> stagiaires;
-    @OneToMany(mappedBy = "stage")
+    // Relation avec Periode
+    @OneToMany(mappedBy = "stage", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Periode> periodes;
 
     public Long getId() {
@@ -70,14 +62,6 @@ public class Stage {
 
     public void setStageAnnee(StageAnnee stageAnnee) {
         this.stageAnnee = stageAnnee;
-    }
-
-    public Set<Stagiaire> getStagiaires() {
-        return stagiaires;
-    }
-
-    public void setStagiaires(Set<Stagiaire> stagiaires) {
-        this.stagiaires = stagiaires;
     }
 
     public Set<Periode> getPeriodes() {

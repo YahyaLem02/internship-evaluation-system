@@ -12,15 +12,21 @@ public class StageAnneeDTO {
     private Set<Long> stageIds; // IDs of related stages
     private String description;
     private String regles;
+    private String shareToken;
+    private Set<StagiaireDTO> stagiaires; // Liste des étudiants inscrits
+
+
 
     // Constructor with all arguments
-    public StageAnneeDTO(Long id, String anneeUniversitaire, Set<Long> stageIds, String description, String regles) {
+    public StageAnneeDTO(Long id, String anneeUniversitaire, Set<Long> stageIds, String description, String regles , String shareToken) {
         this.id = id;
         this.anneeUniversitaire = anneeUniversitaire;
         this.stageIds = stageIds;
         this.description = description;
         this.regles = regles;
+        this.shareToken = shareToken;
     }
+
     // Default constructor
     public StageAnneeDTO() {}
 
@@ -58,6 +64,12 @@ public class StageAnneeDTO {
     }
     public void setRegles(String regles) {
         this.regles = regles;
+    }
+    public String getShareToken() {
+        return shareToken;
+    }
+    public void setShareToken(String shareToken) {
+        this.shareToken = shareToken;
     }
 
 }

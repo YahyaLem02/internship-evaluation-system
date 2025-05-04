@@ -1,7 +1,11 @@
 package org.example.backend.controllers;
 
 import org.example.backend.dto.StageAnneeDTO;
+import org.example.backend.dto.StagiaireDetailDTO;
+import org.example.backend.entities.StageAnnee;
+import org.example.backend.repositories.StageAnneeRepository;
 import org.example.backend.services.StageAnneeService;
+import org.example.backend.services.StageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +17,10 @@ public class StageAnneeController {
 
     @Autowired
     private StageAnneeService stageAnneeService;
+    @Autowired
+    private StageAnneeRepository stageAnneeRepository;
+    @Autowired
+    private StageService stageService;
 
     // Endpoint pour créer un StageAnnee
     @PostMapping("/add")
@@ -42,4 +50,21 @@ public class StageAnneeController {
     public void deleteStageAnnee(@PathVariable Long id) {
         stageAnneeService.deleteStageAnnee(id);
     }
+
+    @GetMapping("/token/{shareToken}")
+
+    // Endpoint pour obtenir un StageAnnee par token de partage
+    public StageAnneeDTO getStageAnneeByToken(@PathVariable String shareToken) {
+        StageAnnee sa = stageAnneeRepository.findByShareToken(shareToken)
+                .orElseThrow(() -> new RuntimeException("Not found"));
+        return new StageAnneeDTO(sa.getId(), sa.getAnneeUniversitaire(), null, sa.getDescription(), sa.getRegles(), sa.getShareToken());
+    }
+
+    // Endpoint pour récupérer les étudiants associés à une StageAnnee
+    @GetMapping("/{id}/students")
+    public List<StagiaireDetailDTO> getStudentsForStageAnnee(@PathVariable Long id) {
+        return stageAnneeService
+                .getStudentsForStageAnnee(id);
+    }
 }
+

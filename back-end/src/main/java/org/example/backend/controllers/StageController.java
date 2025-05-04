@@ -1,5 +1,6 @@
 package org.example.backend.controllers;
 
+import org.example.backend.dto.StageCreateDTO;
 import org.example.backend.dto.StageDTO;
 import org.example.backend.services.StageService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,10 @@ public class StageController {
     @GetMapping("/all")
     public List<StageDTO> getAll() {
         return stageService.getAllStages();
+
     }
+
+
 
     @GetMapping("/{id}")
     public StageDTO getById(@PathVariable Long id) {
@@ -37,5 +41,10 @@ public class StageController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         stageService.deleteStage(id);
+    }
+
+    @PostMapping("/public/add")
+    public StageDTO createStageViaShareLink(@RequestBody StageCreateDTO dto) {
+        return stageService.createStageViaShareLink(dto);
     }
 }
