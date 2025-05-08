@@ -21,6 +21,9 @@ public class PeriodeId implements Serializable {
         this.stageId = stageId;
     }
 
+    public PeriodeId(Long periodeId) {
+    }
+
     public Long getStagiaireId() {
         return stagiaireId;
     }

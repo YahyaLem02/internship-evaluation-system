@@ -1,9 +1,7 @@
 package org.example.backend.services;
 
-import org.example.backend.dto.StagiaireDTO;
-import org.example.backend.dto.StagiaireDetailDTO;
+import org.example.backend.dto.*;
 import org.example.backend.entities.StageAnnee;
-import org.example.backend.dto.StageAnneeDTO;
 import org.example.backend.repositories.StageAnneeRepository;
 import org.example.backend.repositories.StageRepository;
 import org.example.backend.entities.Stage;
@@ -11,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -113,10 +112,94 @@ public StageAnneeDTO getStageAnnee(Long id) {
                                 periode.getStagiaire().getInstitution(),
                                 stage.getEntreprise(), // Pass the stage's entreprise
                                 periode.getDateDebut() != null ? periode.getDateDebut().toString() : null,
-                                periode.getDateFin() != null ? periode.getDateFin().toString() : null
-                        ))
+                                periode.getDateFin() != null ? periode.getDateFin().toString() : null,
+                                periode.getAppreciationToken()
+                                ))
                 )
                 .distinct() // Avoid duplicates if a student participates in multiple stages
                 .collect(Collectors.toList());
     }
+
+    public List<StagiaireDetailDTO> getStudentsWithEvaluations(Long stageAnneeId) {
+        List<Stage> stages = stageRepository.findByStageAnneeId(stageAnneeId);
+
+        return stages.stream()
+                .flatMap(stage ->
+                        stage.getPeriodes().stream().map(periode -> {
+                            // Créer la liste des appréciations en vérifiant qu'elles existent
+                            List<AppreciationDisplayDto> appreciations = periode.getAppreciations() != null && !periode.getAppreciations().isEmpty() ?
+                                    periode.getAppreciations().stream()
+                                            .map(appreciation -> {
+                                                // Récupérer les évaluations
+                                                List<EvaluationDTO> evaluations = appreciation.getEvaluations() != null ?
+                                                        appreciation.getEvaluations().stream()
+                                                                .map(eval -> new EvaluationDTO(
+                                                                        eval.getCategorie(),
+                                                                        eval.getValeur()
+                                                                ))
+                                                                .collect(Collectors.toList()) :
+                                                        new ArrayList<>();
+
+                                                // Récupérer les compétences avec leurs catégories
+                                                List<CompetenceDTO> competences = appreciation.getCompetences() != null ?
+                                                        appreciation.getCompetences().stream()
+                                                                .map(comp -> new CompetenceDTO(
+                                                                        comp.getIntitule(),
+                                                                        comp.getNote(),
+                                                                        comp.getCategories() != null ?
+                                                                                comp.getCategories().stream()
+                                                                                        .map(cat -> new CategorieDTO(
+                                                                                                cat.getIntitule(),
+                                                                                                cat.getValeur()
+                                                                                        ))
+                                                                                        .collect(Collectors.toList()) :
+                                                                                new ArrayList<>()
+                                                                ))
+                                                                .collect(Collectors.toList()) :
+                                                        new ArrayList<>();
+
+                                                // Log pour débogage
+                                                System.out.println("Appréciation ID: " + appreciation.getId() +
+                                                        ", Évaluations: " + (evaluations != null ? evaluations.size() : "null") +
+                                                        ", Compétences: " + (competences != null ? competences.size() : "null"));
+
+                                                return new AppreciationDisplayDto(
+                                                        appreciation.getId(),
+                                                        appreciation.getTuteur() != null ? appreciation.getTuteur().getNom() : null,
+                                                        appreciation.getTuteur() != null ? appreciation.getTuteur().getPrenom() : null,
+                                                        appreciation.getTuteur() != null ? appreciation.getTuteur().getEmail() : null,
+                                                        appreciation.getTuteur() != null ? appreciation.getTuteur().getEntreprise() : null,
+                                                        evaluations,  // Ajouter les évaluations
+                                                        competences,  // Ajouter les compétences
+                                                        stage.getDescription(),
+                                                        stage.getObjectif()
+                                                );
+                                            })
+                                            .collect(Collectors.toList()) :
+                                    new ArrayList<>();
+
+                            // Ajoutez un log pour déboguer
+                            System.out.println("Étudiant: " + periode.getStagiaire().getNom() +
+                                    ", Evaluated: " + stage.isEvaluated() +
+                                    ", Appréciations: " + appreciations.size());
+
+                            return new StagiaireDetailDTO(
+                                    periode.getStagiaire().getId(),
+                                    periode.getStagiaire().getNom(),
+                                    periode.getStagiaire().getPrenom(),
+                                    periode.getStagiaire().getEmail(),
+                                    periode.getStagiaire().getInstitution(),
+                                    stage.getEntreprise(),
+                                    periode.getDateDebut() != null ? periode.getDateDebut().toString() : null,
+                                    periode.getDateFin() != null ? periode.getDateFin().toString() : null,
+                                    periode.getAppreciationToken(),
+                                    appreciations,
+                                    stage.isEvaluated()
+                            );
+                        })
+                ).distinct()
+                .collect(Collectors.toList());
+    }
+
+
 }

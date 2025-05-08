@@ -54,9 +54,6 @@ public class StagaireService {
             existing.setMotDePasse(stagiaireDTO.getMotDePasse());
         }
 
-        // Tu peux gérer la mise à jour des stages si besoin
-        // Par exemple : existing.setStages(...)
-
         Stagiaire updated = stagiaireRepository.save(existing);
         return modelMapper.map(updated, StagiaireDTO.class);
     }

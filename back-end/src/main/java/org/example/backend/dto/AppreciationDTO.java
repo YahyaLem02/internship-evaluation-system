@@ -23,6 +23,13 @@ public class AppreciationDTO {
     // Default constructor
     public AppreciationDTO() {}
 
+    public AppreciationDTO(Long id, String nom, String prenom, String email) {
+        this.id = id;
+        this.tuteurId = tuteurId;
+        this.stagiaireId = stagiaireId;
+        this.stageId = stageId;
+    }
+
     // Getters and setters
     public Long getId() {
         return id;

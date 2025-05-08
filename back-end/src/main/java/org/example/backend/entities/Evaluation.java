@@ -18,6 +18,7 @@ public class Evaluation {
     @ManyToOne
     private Appreciation appreciation;
 
+
     public Long getId() {
         return id;
     }

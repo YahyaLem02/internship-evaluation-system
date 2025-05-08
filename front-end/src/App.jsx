@@ -7,13 +7,15 @@ import StageAnneeList from "./pages/StageAnneeList.jsx";
 import StageAnneeForm from "./pages/StageAnneeForm.jsx";
 import PublicStageForm from "./pages/PublicStageForm.jsx";
 import StageAnneeDetail from "./pages/StageAnneeDetail.jsx";
-
+import AppreciationForm from "./components/AppreciationForm.jsx";
+import AppreciationFormPage from "./pages/AppreciationFormPage.jsx";
 export default function App() {
     return (
         <BrowserRouter>
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/stage-inscription/:token" element={<PublicStageForm />} />
+                <Route path="/appreciation/:token" element={<AppreciationFormPage />} />
                 {/* Route parent avec layout et Outlet */}
                 <Route element={<DashboardLayout />}>
                     <Route path="/dashboard" element={<Dashboard />} />

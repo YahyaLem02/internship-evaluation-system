@@ -30,6 +30,7 @@ public abstract class Personne {
 
 
 
+
     public Long getId() {
         return id;
     }
@@ -69,4 +70,5 @@ public abstract class Personne {
     public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
     }
+
 }

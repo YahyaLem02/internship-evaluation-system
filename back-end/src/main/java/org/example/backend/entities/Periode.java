@@ -2,6 +2,7 @@ package org.example.backend.entities;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Periode {
@@ -24,6 +25,28 @@ public class Periode {
 
     @Column(name = "date_fin", nullable = false)
     private LocalDate dateFin;
+    @Column(unique = true)
+    private String appreciationToken;
+    // Add this to the `Periode` class
+    @OneToMany(mappedBy = "periode", cascade = CascadeType.ALL)
+    private List<Appreciation> appreciations;
+
+    public List<Appreciation> getAppreciations() {
+        return appreciations;
+    }
+
+    public void setAppreciations(List<Appreciation> appreciations) {
+        this.appreciations = appreciations;
+    }
+
+    public String getAppreciationToken() {
+        return appreciationToken;
+    }
+    public void setAppreciationToken(String appreciationToken) {
+        this.appreciationToken = appreciationToken;
+    }
+    public Periode() {
+    }
 
     public PeriodeId getId() {
         return id;

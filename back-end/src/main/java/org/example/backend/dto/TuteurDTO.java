@@ -8,6 +8,7 @@ import java.util.Set;
 
 public class TuteurDTO extends PersonneDTO {
     private String entreprise;
+
     private Set<Long> appreciationIds; // IDs of related appreciations
     // Constructor with all arguments
     public TuteurDTO(Long id, String nom, String prenom, String email, String motDePasse, String entreprise, Set<Long> appreciationIds) {

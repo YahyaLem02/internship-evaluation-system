@@ -10,11 +10,16 @@ public interface PeriodeRepository extends JpaRepository<Periode, PeriodeId> {
     // Vérifie si une période existe par son ID composite
     boolean existsById(PeriodeId id);
 
+
+
+
     // Supprime une période par son ID composite
     void deleteById(PeriodeId id);
 
     // Trouve une période par son ID composite, renvoie un Optional
     Optional<Periode> findById(PeriodeId id);
+    Optional<Periode> findByAppreciationToken(String token);
+
 
     Optional<Periode> findById_StagiaireIdAndId_StageId(Long stagiaireId, Long stageId);
 
