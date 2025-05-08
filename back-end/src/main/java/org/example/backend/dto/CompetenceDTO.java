@@ -1,36 +1,25 @@
 package org.example.backend.dto;
 
-
 import lombok.*;
-import java.util.Set;
-
+import java.util.List;
 
 public class CompetenceDTO {
-    private Long id;
     private String intitule;
     private String note;
-    private Long appreciationId; // ID of the related appreciation
-    private Set<Long> categorieIds; // IDs of related categories
+    private List<CategorieDTO> categories;
 
-    // Constructor with all arguments
-    public CompetenceDTO(Long id, String intitule, String note, Long appreciationId, Set<Long> categorieIds) {
-        this.id = id;
+    public <R> CompetenceDTO(String intitule, String note, List<CategorieDTO> categories) {
         this.intitule = intitule;
         this.note = note;
-        this.appreciationId = appreciationId;
-        this.categorieIds = categorieIds;
-    }
-    // Default constructor
-    public CompetenceDTO() {}
-
-    public Long getId() {
-        return id;
+        this.categories = categories;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    // Constructeur par défaut
+    public CompetenceDTO() {
     }
 
+
+    // Getters et setters
     public String getIntitule() {
         return intitule;
     }
@@ -47,19 +36,20 @@ public class CompetenceDTO {
         this.note = note;
     }
 
-    public Long getAppreciationId() {
-        return appreciationId;
+    public List<CategorieDTO> getCategories() {
+        return categories;
     }
 
-    public void setAppreciationId(Long appreciationId) {
-        this.appreciationId = appreciationId;
+    public void setCategories(List<CategorieDTO> categories) {
+        this.categories = categories;
     }
 
-    public Set<Long> getCategorieIds() {
-        return categorieIds;
-    }
-
-    public void setCategorieIds(Set<Long> categorieIds) {
-        this.categorieIds = categorieIds;
+    @Override
+    public String toString() {
+        return "CompetenceDTO{" +
+                "intitule='" + intitule + '\'' +
+                ", note='" + note + '\'' +
+                ", categories=" + categories +
+                '}';
     }
 }

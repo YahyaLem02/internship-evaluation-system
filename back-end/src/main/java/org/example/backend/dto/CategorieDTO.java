@@ -1,31 +1,21 @@
 package org.example.backend.dto;
 
-
 import lombok.*;
 
-
 public class CategorieDTO {
-    private Long id;
     private String intitule;
     private String valeur;
-    private Long competenceId; // ID of the related competence
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public CategorieDTO(Long id, String intitule, String valeur, Long competenceId) {
-        this.id = id;
+    public CategorieDTO(String intitule, String valeur) {
         this.intitule = intitule;
         this.valeur = valeur;
-        this.competenceId = competenceId;
     }
+
+    // Constructeur par défaut
     public CategorieDTO() {
     }
 
+    // Getters et setters
     public String getIntitule() {
         return intitule;
     }
@@ -42,11 +32,11 @@ public class CategorieDTO {
         this.valeur = valeur;
     }
 
-    public Long getCompetenceId() {
-        return competenceId;
-    }
-
-    public void setCompetenceId(Long competenceId) {
-        this.competenceId = competenceId;
+    @Override
+    public String toString() {
+        return "CategorieDTO{" +
+                "intitule='" + intitule + '\'' +
+                ", valeur='" + valeur + '\'' +
+                '}';
     }
 }

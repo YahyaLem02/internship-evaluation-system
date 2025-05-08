@@ -16,6 +16,8 @@ public class Stage {
     private String description;
     private String objectif;
     private String entreprise;
+    private boolean isEvaluated = false;
+
 
     @ManyToOne
     private StageAnnee stageAnnee;
@@ -31,6 +33,14 @@ public class Stage {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public boolean isEvaluated() {
+        return isEvaluated;
+    }
+    public void setEvaluated(boolean evaluated) {
+        isEvaluated = evaluated;
+    }
+
 
     public String getDescription() {
         return description;

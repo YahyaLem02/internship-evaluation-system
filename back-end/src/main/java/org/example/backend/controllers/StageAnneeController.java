@@ -66,5 +66,9 @@ public class StageAnneeController {
         return stageAnneeService
                 .getStudentsForStageAnnee(id);
     }
+    @GetMapping("/{id}/students-with-evaluations")
+    public List<StagiaireDetailDTO> getStudentsWithEvaluations(@PathVariable Long id) {
+        return stageAnneeService.getStudentsWithEvaluations(id);
+    }
 }
 

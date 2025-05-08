@@ -1,34 +1,38 @@
 package org.example.backend.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 public class Appreciation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_tuteur")
-    private Tuteur tuteur;
-
-    @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "stagiaire_id", referencedColumnName = "id_stagiaire"),
-            @JoinColumn(name = "stage_id", referencedColumnName = "id_stage")
+            @JoinColumn(name = "id_stagiaire", referencedColumnName = "id_stagiaire"),
+            @JoinColumn(name = "id_stage", referencedColumnName = "id_stage")
     })
     private Periode periode;
 
-    @OneToMany(mappedBy = "appreciation")
-    private Set<Evaluation> evaluations;
+    @ManyToOne
+    @JoinColumn(name = "tuteur_id")
+    private Tuteur tuteur;
 
-    @OneToMany(mappedBy = "appreciation")
-    private Set<Competence> competences;
+    @OneToMany(mappedBy = "appreciation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Evaluation> evaluations = new HashSet<>();
 
+    @OneToMany(mappedBy = "appreciation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Competence> competences = new HashSet<>();
+
+    // Constructeurs
+    public Appreciation() {
+    }
+
+    // Getters et Setters
     public Long getId() {
         return id;
     }
@@ -37,20 +41,20 @@ public class Appreciation {
         this.id = id;
     }
 
-    public Tuteur getTuteur() {
-        return tuteur;
-    }
-
-    public void setTuteur(Tuteur tuteur) {
-        this.tuteur = tuteur;
-    }
-
     public Periode getPeriode() {
         return periode;
     }
 
     public void setPeriode(Periode periode) {
         this.periode = periode;
+    }
+
+    public Tuteur getTuteur() {
+        return tuteur;
+    }
+
+    public void setTuteur(Tuteur tuteur) {
+        this.tuteur = tuteur;
     }
 
     public Set<Evaluation> getEvaluations() {
@@ -67,5 +71,26 @@ public class Appreciation {
 
     public void setCompetences(Set<Competence> competences) {
         this.competences = competences;
+    }
+
+    // Méthodes utilitaires pour gérer les relations bidirectionnelles
+    public void addEvaluation(Evaluation evaluation) {
+        evaluations.add(evaluation);
+        evaluation.setAppreciation(this);
+    }
+
+    public void removeEvaluation(Evaluation evaluation) {
+        evaluations.remove(evaluation);
+        evaluation.setAppreciation(null);
+    }
+
+    public void addCompetence(Competence competence) {
+        competences.add(competence);
+        competence.setAppreciation(this);
+    }
+
+    public void removeCompetence(Competence competence) {
+        competences.remove(competence);
+        competence.setAppreciation(null);
     }
 }

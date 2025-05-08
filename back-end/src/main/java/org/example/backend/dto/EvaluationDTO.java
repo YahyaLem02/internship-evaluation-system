@@ -1,35 +1,21 @@
 package org.example.backend.dto;
 
-
 import lombok.*;
 
-
-
 public class EvaluationDTO {
-    private Long id;
     private String categorie;
     private String valeur;
-    private Long appreciationId; // ID of the related appreciation
 
-    // Constructor with all arguments
-
-    public EvaluationDTO(Long id, String categorie, String valeur, Long appreciationId) {
-        this.id = id;
+    public EvaluationDTO(String categorie, String valeur) {
         this.categorie = categorie;
         this.valeur = valeur;
-        this.appreciationId = appreciationId;
     }
-    // Default constructor
-    public EvaluationDTO() {}
-
-    public Long getId() {
-        return id;
+    // Constructeur par défaut
+    public EvaluationDTO() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
+    // Getters et setters
     public String getCategorie() {
         return categorie;
     }
@@ -46,11 +32,11 @@ public class EvaluationDTO {
         this.valeur = valeur;
     }
 
-    public Long getAppreciationId() {
-        return appreciationId;
-    }
-
-    public void setAppreciationId(Long appreciationId) {
-        this.appreciationId = appreciationId;
+    @Override
+    public String toString() {
+        return "EvaluationDTO{" +
+                "categorie='" + categorie + '\'' +
+                ", valeur='" + valeur + '\'' +
+                '}';
     }
 }

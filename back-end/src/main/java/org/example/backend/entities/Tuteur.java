@@ -36,6 +36,7 @@ public class Tuteur extends Personne {
         return appreciations;
     }
 
+
     public void setAppreciations(Set<Appreciation> appreciations) {
         this.appreciations = appreciations;
     }

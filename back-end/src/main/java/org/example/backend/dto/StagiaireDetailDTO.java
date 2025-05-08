@@ -1,6 +1,8 @@
 package org.example.backend.dto;
 
 
+import java.util.List;
+
 public class StagiaireDetailDTO {
     private Long id;
     private String nom;
@@ -10,10 +12,19 @@ public class StagiaireDetailDTO {
     private String entreprise; // Entreprise associée au stage
     private String dateDebut; // Période de début
     private String dateFin;   // Période de fin
+    private String appreciationToken;
+    private List<AppreciationDisplayDto> appreciations;
+
+
+    private boolean evaluated;
+
+
+
+
 
     public StagiaireDetailDTO() {
     }
-    public StagiaireDetailDTO(Long id, String nom, String prenom, String email, String institution, String entreprise, String dateDebut, String dateFin) {
+    public StagiaireDetailDTO(Long id, String nom, String prenom, String email, String institution, String entreprise, String dateDebut, String dateFin, String appreciationToken) {
         this.id = id;
         this.nom = nom;
         this.prenom = prenom;
@@ -22,7 +33,54 @@ public class StagiaireDetailDTO {
         this.entreprise = entreprise;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
+        this.appreciationToken = appreciationToken;
     }
+    public StagiaireDetailDTO(Long id, String nom, String prenom, String email, String institution, String entreprise, String dateDebut, String dateFin, String appreciationToken, List<AppreciationDisplayDto> appreciations) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.institution = institution;
+        this.entreprise = entreprise;
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.appreciationToken = appreciationToken;
+        this.appreciations = appreciations;
+    }
+
+    public boolean isEvaluated() {
+        return evaluated;
+    }
+
+    public void setEvaluated(boolean evaluated) {
+        this.evaluated = evaluated;
+    }
+    public StagiaireDetailDTO(Long id, String nom, String prenom, String email, String institution, String entreprise, String dateDebut, String dateFin, String appreciationToken, boolean evaluated) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.institution = institution;
+        this.entreprise = entreprise;
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.appreciationToken = appreciationToken;
+        this.evaluated = evaluated;
+    }
+    public StagiaireDetailDTO(Long id, String nom, String prenom, String email, String institution, String entreprise, String dateDebut, String dateFin, String appreciationToken, List<AppreciationDisplayDto> appreciations, boolean evaluated) {
+    this.id = id;
+    this.nom = nom;
+    this.prenom = prenom;
+    this.email = email;
+    this.institution = institution;
+    this.entreprise = entreprise;
+    this.dateDebut = dateDebut;
+    this.dateFin = dateFin;
+    this.appreciationToken = appreciationToken;
+    this.appreciations = appreciations;
+    this.evaluated = evaluated;
+}
+
     public Long getId() {
         return id;
     }
@@ -72,5 +130,18 @@ public class StagiaireDetailDTO {
     public void setDateFin(String dateFin) {
         this.dateFin = dateFin;
     }
+    public String getAppreciationToken() {
+        return appreciationToken;
+    }
+    public void setAppreciationToken(String appreciationToken) {
+        this.appreciationToken = appreciationToken;
+    }
+    public List<AppreciationDisplayDto> getAppreciations() {
+        return appreciations;
+    }
+    public void setAppreciations(List<AppreciationDisplayDto> appreciations) {
+        this.appreciations = appreciations;
+    }
+
 
 }

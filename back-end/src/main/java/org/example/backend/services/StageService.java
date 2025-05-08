@@ -1,9 +1,7 @@
 package org.example.backend.services;
 
 import jakarta.transaction.Transactional;
-import org.example.backend.dto.StageCreateDTO;
-import org.example.backend.dto.StageDTO;
-import org.example.backend.dto.StagiaireDTO;
+import org.example.backend.dto.*;
 import org.example.backend.entities.*;
 import org.example.backend.repositories.PeriodeRepository;
 import org.example.backend.repositories.StagaireRepository;
@@ -132,7 +130,7 @@ public class StageService {
             periode.setStage(stage);
             periode.setDateDebut(dto.getDateDebut());
             periode.setDateFin(dto.getDateFin());
-
+            periode.setAppreciationToken(UUID.randomUUID().toString());
             System.out.println("Periode avant sauvegarde : " + periode);
             periodeRepository.save(periode);
             System.out.println("Periode après sauvegarde : " + periode);

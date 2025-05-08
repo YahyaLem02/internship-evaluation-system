@@ -47,4 +47,5 @@ public class StageController {
     public StageDTO createStageViaShareLink(@RequestBody StageCreateDTO dto) {
         return stageService.createStageViaShareLink(dto);
     }
+
 }
