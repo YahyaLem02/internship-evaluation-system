@@ -10,9 +10,6 @@ import java.util.Set;
 
 public class Tuteur extends Personne {
     private String entreprise;
-
-
-
     @OneToMany(mappedBy = "tuteur")
     private Set<Appreciation> appreciations;
 

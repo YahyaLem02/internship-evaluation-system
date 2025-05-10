@@ -1,6 +1,7 @@
 package org.example.backend.controllers;
 
 import org.example.backend.dto.AppreciationFormDTO;
+import org.example.backend.dto.AppreciationTuteurDTO;
 import org.example.backend.entities.Periode;
 import org.example.backend.entities.Stage;
 import org.example.backend.repositories.PeriodeRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -98,4 +100,13 @@ public class AppreciationController {
                     .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/tuteur/{tuteurId}")
+    public ResponseEntity<List<AppreciationTuteurDTO>> getAppreciationsByTuteurId(@PathVariable Long tuteurId) {
+        List<AppreciationTuteurDTO> appreciations = appreciationService.getAppreciationsByTuteurId(tuteurId);
+        return ResponseEntity.ok(appreciations);
+    }
+
+
+
 }

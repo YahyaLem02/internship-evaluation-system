@@ -15,8 +15,10 @@ public class StagiaireDetailDTO {
     private String appreciationToken;
     private List<AppreciationDisplayDto> appreciations;
 
-
+    private List<StageDetailDTO> stages;
     private boolean evaluated;
+
+
 
 
 
@@ -48,6 +50,15 @@ public class StagiaireDetailDTO {
         this.appreciations = appreciations;
     }
 
+    public StagiaireDetailDTO(Long id, String nom, String prenom, String email, String institution, List<StageDetailDTO> stages, boolean evaluated) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.institution = institution;
+        this.stages = stages;
+        this.evaluated = evaluated;
+    }
     public boolean isEvaluated() {
         return evaluated;
     }
@@ -80,6 +91,25 @@ public class StagiaireDetailDTO {
     this.appreciations = appreciations;
     this.evaluated = evaluated;
 }
+    public StagiaireDetailDTO(Long id, String nom, String prenom, String email,
+                              String institution, String entreprise,
+                              String dateDebut, String dateFin,
+                              String appreciationToken,
+                              List<AppreciationDisplayDto> appreciations,
+                              List<StageDetailDTO> stages, boolean evaluated) {
+        this.id = id;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.email = email;
+        this.institution = institution;
+        this.entreprise = entreprise;
+        this.dateDebut = dateDebut;
+        this.dateFin = dateFin;
+        this.appreciationToken = appreciationToken;
+        this.appreciations = appreciations;
+        this.stages = stages;
+        this.evaluated = evaluated;
+    }
 
     public Long getId() {
         return id;

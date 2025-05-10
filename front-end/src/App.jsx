@@ -9,6 +9,11 @@ import PublicStageForm from "./pages/PublicStageForm.jsx";
 import StageAnneeDetail from "./pages/StageAnneeDetail.jsx";
 import AppreciationForm from "./components/AppreciationForm.jsx";
 import AppreciationFormPage from "./pages/AppreciationFormPage.jsx";
+import StagiairesList from "./pages/StagiairesList.jsx"; // Changé de EtudiantsList
+import StagiaireDetail from "./pages/StagiaireDetail.jsx"; // Changé de EtudiantDetail
+import TuteursList from "./pages/TuteursList.jsx";
+import TuteurDetail from "./pages/TuteurDetail.jsx";
+
 export default function App() {
     return (
         <BrowserRouter>
@@ -20,10 +25,25 @@ export default function App() {
                 <Route element={<DashboardLayout />}>
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/profile" element={<Profile />} />
+
+                    {/* Routes pour les stages */}
                     <Route path="/stage-annee" element={<StageAnneeList />} />
                     <Route path="/stage-annee/create" element={<StageAnneeForm />} />
                     <Route path="/stage-annee/:id/edit" element={<StageAnneeForm />} />
                     <Route path="/stage-annee/:id" element={<StageAnneeDetail />} />
+
+                    {/* Routes pour les stagiaires */}
+                    <Route path="/stagiaires" element={<StagiairesList />} />
+                    <Route path="/stagiaires/:id" element={<StagiaireDetail />} />
+
+                    {/* Routes pour les tuteurs */}
+                    <Route path="/tuteurs" element={<TuteursList />} />
+                    <Route path="/tuteurs/:id" element={<TuteurDetail />} />
+
+                    {/* Route pour les appréciations */}
+
+                    {/* Autres routes */}
+                    <Route path="/settings" element={<div className="p-6">Page de paramètres</div>} />
                 </Route>
                 <Route path="*" element={<div>Page non trouvée</div>} />
             </Routes>

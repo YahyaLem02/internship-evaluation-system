@@ -1,20 +1,23 @@
 package org.example.backend.services;
 
-import org.example.backend.dto.AppreciationFormDTO;
-import org.example.backend.dto.CategorieDTO;
-import org.example.backend.dto.CompetenceDTO;
-import org.example.backend.dto.EvaluationDTO;
-import org.example.backend.dto.TuteurDTO;
+import org.example.backend.dto.*;
 import org.example.backend.entities.*;
 import org.example.backend.repositories.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AppreciationService {
+
+
+
 
     private final PeriodeRepository periodeRepository;
     private final StageRepository stageRepository;
@@ -23,6 +26,8 @@ public class AppreciationService {
     private final CompetenceRepository competenceRepository;
     private final CategorieRepository categorieRepository;
     private final TuteurRepository tuteurRepository;
+    @Autowired
+    private TuteurService tuteurService;
 
     @Autowired
     public AppreciationService(
@@ -68,7 +73,7 @@ public class AppreciationService {
             stage = stageRepository.save(stage);
             System.out.println("Stage mis à jour avec succès, ID: " + stage.getId());
 
-            // Création ou récupération du tuteur
+            // Utilisation du service pour récupérer ou créer le tuteur
             TuteurDTO tuteurDTO = form.getTuteur();
             if (tuteurDTO == null) {
                 System.err.println("ERREUR: Les informations du tuteur sont manquantes");
@@ -77,29 +82,9 @@ public class AppreciationService {
 
             System.out.println("Traitement des informations du tuteur: " + tuteurDTO);
 
-            // Chercher d'abord si le tuteur existe déjà par email
-            Tuteur tuteur = null;
-            if (tuteurDTO.getEmail() != null && !tuteurDTO.getEmail().isEmpty()) {
-                tuteur = tuteurRepository.findByEmail(tuteurDTO.getEmail()).orElse(null);
-            }
-
-            // Si le tuteur n'existe pas, en créer un nouveau
-            if (tuteur == null) {
-                tuteur = new Tuteur();
-                tuteur.setNom(tuteurDTO.getNom());
-                tuteur.setPrenom(tuteurDTO.getPrenom());
-                tuteur.setEmail(tuteurDTO.getEmail());
-                tuteur.setEntreprise(tuteurDTO.getEntreprise());
-                tuteur = tuteurRepository.save(tuteur);
-                System.out.println("Nouveau tuteur créé avec ID: " + tuteur.getId());
-            } else {
-                // Mettre à jour les informations du tuteur existant
-                tuteur.setNom(tuteurDTO.getNom());
-                tuteur.setPrenom(tuteurDTO.getPrenom());
-                tuteur.setEntreprise(tuteurDTO.getEntreprise());
-                tuteur = tuteurRepository.save(tuteur);
-                System.out.println("Tuteur existant mis à jour avec ID: " + tuteur.getId());
-            }
+            // Utiliser la méthode de service pour trouver ou créer le tuteur
+            Tuteur tuteur = tuteurService.findOrCreateTuteur(tuteurDTO);
+            System.out.println("Tuteur traité avec ID: " + tuteur.getId());
 
             // Création de l'appréciation
             System.out.println("Création d'une nouvelle appréciation");
@@ -210,11 +195,64 @@ public class AppreciationService {
             throw new RuntimeException("Erreur lors de la sauvegarde de l'appréciation: " + e.getMessage(), e);
         }
     }
-
     /**
      * Vérifie si un token d'appréciation est valide
      */
     public boolean isAppreciationTokenValid(String token) {
         return periodeRepository.findByAppreciationToken(token).isPresent();
     }
+
+    public List<AppreciationTuteurDTO> getAppreciationsByTuteurId(Long tuteurId) {
+        List<Appreciation> appreciations = appreciationRepository.findByTuteurId(tuteurId);
+
+        return appreciations.stream()
+                .map(appreciation -> {
+                    Periode periode = appreciation.getPeriode();
+                    Stagiaire stagiaire = periode.getStagiaire();
+                    Stage stage = periode.getStage();
+
+                    // Récupérer les évaluations
+                    List<EvaluationDTO> evaluations = appreciation.getEvaluations().stream()
+                            .map(eval -> new EvaluationDTO(
+                                    eval.getCategorie(),
+                                    eval.getValeur()
+                            ))
+                            .collect(Collectors.toList());
+
+                    // Récupérer les compétences avec leurs catégories
+                    List<CompetenceDTO> competences = appreciation.getCompetences().stream()
+                            .map(comp -> {
+                                List<CategorieDTO> categories = comp.getCategories().stream()
+                                        .map(cat -> new CategorieDTO(
+                                                cat.getIntitule(),
+                                                cat.getValeur()
+                                        ))
+                                        .collect(Collectors.toList());
+
+                                return new CompetenceDTO(
+                                        comp.getIntitule(),
+                                        comp.getNote(),
+                                        categories
+                                );
+                            })
+                            .collect(Collectors.toList());
+
+                    return new AppreciationTuteurDTO(
+                            appreciation.getId(),
+                            stagiaire.getNom(),
+                            stagiaire.getPrenom(),
+                            stagiaire.getEmail(),
+                            stage.getEntreprise(),
+                            periode.getDateDebut() != null ? periode.getDateDebut().toString() : null,
+                            periode.getDateFin() != null ? periode.getDateFin().toString() : null,
+                            evaluations,
+                            competences,
+                            stage.getDescription(),
+                            stage.getObjectif()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

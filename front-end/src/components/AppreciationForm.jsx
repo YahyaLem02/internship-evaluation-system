@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { FaUser, FaUniversity, FaBuilding, FaCalendarAlt, FaClipboardCheck, FaBook, FaStar, FaAward, FaCheckCircle, FaArrowRight, FaExclamationCircle } from "react-icons/fa";
+import axios from "axios";
+import { API_URL } from "../api";
+import { FaUser, FaUniversity, FaBuilding, FaCalendarAlt, FaClipboardCheck, FaBook, FaStar, FaAward, FaCheckCircle, FaArrowRight, FaExclamationCircle, FaSpinner } from "react-icons/fa";
 
 const EVALUATION_CHOICES = {
     implication: [
@@ -61,6 +63,9 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
     const [step, setStep] = useState(1); // Commencer à l'étape 1 (Tuteur)
     const [completedSteps, setCompletedSteps] = useState([]);
     const [errors, setErrors] = useState({});
+    const [checkingEmail, setCheckingEmail] = useState(false);
+    const [emailChecked, setEmailChecked] = useState(false);
+    const [tuteurExistsMessage, setTuteurExistsMessage] = useState(null);
 
     // Nouvel état pour le tuteur
     const [tuteur, setTuteur] = useState({
@@ -90,6 +95,60 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
             extraCategories: []
         }))
     );
+
+    // Fonction pour vérifier l'existence du tuteur par email
+    const checkTuteurExists = async (email) => {
+        if (!email || !email.trim() || !/^\S+@\S+\.\S+$/.test(email)) {
+            setEmailChecked(false);
+            setTuteurExistsMessage(null);
+            return;
+        }
+
+        try {
+            setCheckingEmail(true);
+            const response = await axios.get(`${API_URL}/api/tuteurs/check-email?email=${encodeURIComponent(email)}`);
+            setCheckingEmail(false);
+            setEmailChecked(true);
+
+            if (response.data && response.data.exists) {
+                // Le tuteur existe, on récupère ses informations
+                setTuteur({
+                    nom: response.data.nom || "",
+                    prenom: response.data.prenom || "",
+                    email: email,
+                    entreprise: response.data.entreprise || ""
+                });
+                setTuteurExistsMessage({
+                    type: "success",
+                    text: "Tuteur trouvé ! Les informations ont été pré-remplies."
+                });
+            } else {
+                setTuteurExistsMessage({
+                    type: "info",
+                    text: "Nouveau tuteur. Veuillez remplir tous les champs."
+                });
+            }
+        } catch (error) {
+            console.error("Erreur lors de la vérification de l'email:", error);
+            setCheckingEmail(false);
+            setEmailChecked(true);
+            setTuteurExistsMessage({
+                type: "error",
+                text: "Erreur lors de la vérification de l'email."
+            });
+        }
+    };
+
+    // Gérer le changement d'email avec debounce
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (tuteur.email) {
+                checkTuteurExists(tuteur.email);
+            }
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [tuteur.email]);
 
     // Validation des étapes
     const validateStep = (currentStep) => {
@@ -319,7 +378,43 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                     <h2 className="text-2xl font-bold mb-6 text-[#41729F] flex items-center">
                         <FaUser className="mr-2" />Informations du Tuteur
                     </h2>
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="md:col-span-2">
+                            <label className="block text-[#274472] font-medium mb-1">Email</label>
+                            <div className="relative">
+                                <input
+                                    type="email"
+                                    className={`w-full px-3 py-2 rounded-xl border ${errors.email ? 'border-red-500' : 'border-[#B7C9E2]'} bg-white text-[#41729F] focus:ring-2 focus:ring-[#5885AF] focus:outline-none transition`}
+                                    value={tuteur.email}
+                                    onChange={e => {
+                                        setTuteur(t => ({ ...t, email: e.target.value }));
+                                        setEmailChecked(false);
+                                        setTuteurExistsMessage(null);
+                                    }}
+                                />
+                                {checkingEmail && (
+                                    <div className="absolute right-3 top-2">
+                                        <FaSpinner className="animate-spin text-[#41729F]" />
+                                    </div>
+                                )}
+                            </div>
+                            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+
+                            {tuteurExistsMessage && (
+                                <div className={`mt-2 p-2 rounded-md text-sm flex items-center ${
+                                    tuteurExistsMessage.type === 'success'
+                                        ? 'bg-green-100 text-green-800'
+                                        : tuteurExistsMessage.type === 'error'
+                                            ? 'bg-red-100 text-red-800'
+                                            : 'bg-blue-100 text-blue-800'
+                                }`}>
+                                    <FaExclamationCircle className="mr-2" />
+                                    {tuteurExistsMessage.text}
+                                </div>
+                            )}
+                        </div>
+
                         <div>
                             <label className="block text-[#274472] font-medium mb-1">Nom</label>
                             <input
@@ -340,17 +435,7 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                             />
                             {errors.prenom && <p className="text-red-500 text-xs mt-1">{errors.prenom}</p>}
                         </div>
-                        <div>
-                            <label className="block text-[#274472] font-medium mb-1">Email</label>
-                            <input
-                                type="email"
-                                className={`w-full px-3 py-2 rounded-xl border ${errors.email ? 'border-red-500' : 'border-[#B7C9E2]'} bg-white text-[#41729F] focus:ring-2 focus:ring-[#5885AF] focus:outline-none transition`}
-                                value={tuteur.email}
-                                onChange={e => setTuteur(t => ({ ...t, email: e.target.value }))}
-                            />
-                            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-                        </div>
-                        <div>
+                        <div className="md:col-span-2">
                             <label className="block text-[#274472] font-medium mb-1">
                                 <FaBuilding className="inline mr-1" />Entreprise
                             </label>
@@ -434,6 +519,7 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                 </motion.div>
             )}
 
+            {/* Les autres étapes restent inchangées */}
             {/* Étape 3 : Évaluation générale */}
             {step === 3 && (
                 <motion.div
@@ -582,7 +668,7 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                             )}
 
                             {/* Sous-catégories libres pour compétence 4 */}
-                            {idx                                === 3 && (
+                            {idx === 3 && (
                                 <div className="mt-4">
                                     <div className="mb-3 font-semibold text-[#41729F]">Sous-catégories spécifiques au métier :</div>
                                     {comp.extraCategories.map((cat, catIdx) => (
