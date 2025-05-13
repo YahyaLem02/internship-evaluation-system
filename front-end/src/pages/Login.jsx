@@ -1,10 +1,50 @@
+import React, { useState } from "react";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import AuthService from "../services/AuthService";
 
 const imageUrl =
     "https://img.freepik.com/vecteurs-libre/illustration-emploi-stage_23-2148718493.jpg";
 
 export default function Login() {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setError("");
+        setLoading(true);
+
+        try {
+            // Effectuer la connexion
+            const response = await AuthService.login(email, password);
+
+            // Récupérer les informations de l'utilisateur connecté
+            const user = AuthService.getCurrentUser();
+
+            // Rediriger en fonction du rôle
+            if (user && user.role === "STAGIAIRE") {
+                // Rediriger les stagiaires vers la page "Mon stage"
+                navigate("/student-dashboard");
+            } else {
+                // Rediriger les administrateurs vers le dashboard par défaut
+                navigate("/dashboard");
+            }
+        } catch (err) {
+            console.error("Erreur de connexion:", err);
+            setError(
+                err.response?.data?.message ||
+                "Échec de la connexion. Vérifiez vos identifiants."
+            );
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F7FA] to-[#C3CFE2]">
             <div className="w-full max-w-5xl bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#D4E1F5] items-stretch">
@@ -21,7 +61,14 @@ export default function Login() {
                     <p className="text-[#41729F] mb-8 text-base">
                         Connectez-vous pour accéder à votre espace de suivi de stages.
                     </p>
-                    <form className="space-y-6">
+
+                    {error && (
+                        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                            {error}
+                        </div>
+                    )}
+
+                    <form className="space-y-6" onSubmit={handleLogin}>
                         <div className="relative">
                             <FaEnvelope className="absolute left-3 top-1/2 -translate-y-1/2 text-[#5885AF] text-xl" />
                             <input
@@ -29,6 +76,9 @@ export default function Login() {
                                 placeholder="Email"
                                 className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border border-[#B7C9E2] focus:ring-2 focus:ring-[#41729F] focus:outline-none transition text-[#274472] shadow-sm"
                                 autoComplete="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
                         </div>
                         <div className="relative">
@@ -38,6 +88,9 @@ export default function Login() {
                                 placeholder="Mot de passe"
                                 className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border border-[#B7C9E2] focus:ring-2 focus:ring-[#41729F] focus:outline-none transition text-[#274472] shadow-sm"
                                 autoComplete="current-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
                             />
                         </div>
                         <motion.button
@@ -49,14 +102,15 @@ export default function Login() {
                             whileTap={{ scale: 0.97 }}
                             type="submit"
                             className="w-full py-3 rounded-lg bg-[#41729F] text-white text-lg font-semibold transition-all duration-200"
+                            disabled={loading}
                         >
-                            Se connecter
+                            {loading ? "Connexion en cours..." : "Se connecter"}
                         </motion.button>
                     </form>
                     <div className="mt-6 text-center text-[#5885AF] text-sm">
                         Pas encore de compte ?{" "}
                         <a href="#" className="text-[#009688] hover:underline">
-                            Contactez l’administration
+                            Contactez l'administration
                         </a>
                     </div>
                 </motion.div>

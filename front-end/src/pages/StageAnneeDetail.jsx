@@ -56,8 +56,18 @@ export default function StageAnneeDetail() {
     }, [id]);
 
     // Fonction pour ouvrir la modale avec une appréciation spécifique
-    const openAppreciationModal = (appreciation) => {
-        setSelectedAppreciation(appreciation);
+    const openAppreciationModal = (appreciation, student) => {
+        const enrichedAppreciation = {
+            ...appreciation,
+            stagiaireNom: student.nom,
+            stagiairePrenom: student.prenom,
+            stagiaireEmail: student.email,
+            entreprise: student.entreprise,
+            dateDebut: student.dateDebut,
+            dateFin: student.dateFin,
+        };
+
+        setSelectedAppreciation(enrichedAppreciation);
         setIsModalOpen(true);
     };
 
@@ -191,7 +201,7 @@ export default function StageAnneeDetail() {
                                                 <div className="font-bold">{app.tuteurNom} {app.tuteurPrenom}</div>
                                                 <div className="text-sm text-gray-600">{app.tuteurEmail}</div>
                                                 <button
-                                                    onClick={() => openAppreciationModal(app)}
+                                                    onClick={() => openAppreciationModal(app, student)}
                                                     className="mt-1 text-blue-600 underline hover:text-blue-800 text-sm"
                                                 >
                                                     Voir détails

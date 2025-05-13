@@ -34,6 +34,8 @@ public class StagaireService {
         return modelMapper.map(stagiaireRepository.save(stagiaire), StagiaireDTO.class);
     }
 
+
+
     public List<StagiaireDTO> findAll() {
         return stagiaireRepository.findAll().stream()
                 .map(s -> modelMapper.map(s, StagiaireDTO.class))

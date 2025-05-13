@@ -1,7 +1,7 @@
-import {motion} from "framer-motion";
-import {FaFileAlt} from "react-icons/fa";
+import { motion } from "framer-motion";
+import { FaFileAlt } from "react-icons/fa";
 
-export default  function AppreciationModal({ isOpen, onClose, appreciation }) {
+export default function AppreciationModal({ isOpen, onClose, appreciation }) {
     if (!isOpen || !appreciation) return null;
 
     const stopPropagation = (e) => {
@@ -77,6 +77,7 @@ export default  function AppreciationModal({ isOpen, onClose, appreciation }) {
                         )}
                     </div>
 
+                    {/* Autres sections : Évaluations et Compétences */}
                     {/* Évaluations */}
                     {appreciation.evaluations && appreciation.evaluations.length > 0 && (
                         <div className="mb-6 p-4 bg-[#F5F7FA] rounded-lg">
@@ -93,13 +94,14 @@ export default  function AppreciationModal({ isOpen, onClose, appreciation }) {
                     )}
 
                     {/* Compétences */}
+                    {/* Compétences */}
                     {appreciation.competences && appreciation.competences.length > 0 && (
                         <div className="mb-6 p-4 bg-[#F5F7FA] rounded-lg">
                             <h4 className="text-xl font-semibold text-[#41729F] mb-2">Compétences</h4>
                             {appreciation.competences.map((comp, compIdx) => (
                                 <div key={compIdx} className="mb-4 p-3 bg-white rounded shadow-sm">
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="font-medium">{comp.intitule}</span>
+                                        <span className="font-medium text-[#274472]">{comp.intitule}</span>
                                         <span className="font-bold px-2 py-1 bg-[#41729F] text-white rounded-lg">{comp.note}</span>
                                     </div>
 
@@ -108,9 +110,9 @@ export default  function AppreciationModal({ isOpen, onClose, appreciation }) {
                                             <div className="font-medium text-[#274472] text-sm mb-1">Détails:</div>
                                             <div className="grid grid-cols-1 gap-2">
                                                 {comp.categories.map((cat, catIdx) => (
-                                                    <div key={catIdx} className="flex justify-between text-sm p-1 bg-[#F5F7FA] rounded">
-                                                        <span>{cat.intitule}</span>
-                                                        <span>{cat.valeur}</span>
+                                                    <div key={catIdx} className="flex justify-between items-center text-sm p-2 bg-[#F5F7FA] rounded">
+                                                        <span className="font-medium text-gray-700">{cat.intitule}</span>
+                                                        <span className="italic text-[#41729F]">{cat.valeur}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -140,5 +142,4 @@ export default  function AppreciationModal({ isOpen, onClose, appreciation }) {
             </motion.div>
         </div>
     );
-
 }

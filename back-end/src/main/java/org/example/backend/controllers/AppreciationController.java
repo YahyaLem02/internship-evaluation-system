@@ -2,6 +2,7 @@ package org.example.backend.controllers;
 
 import org.example.backend.dto.AppreciationFormDTO;
 import org.example.backend.dto.AppreciationTuteurDTO;
+import org.example.backend.dto.VerificationCodeRequest;
 import org.example.backend.entities.Periode;
 import org.example.backend.entities.Stage;
 import org.example.backend.repositories.PeriodeRepository;
@@ -9,6 +10,8 @@ import org.example.backend.services.AppreciationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -22,6 +25,9 @@ public class AppreciationController {
 
     private final AppreciationService appreciationService;
     private final PeriodeRepository periodeRepository;
+
+    @Autowired
+    private JavaMailSender mailSender;
 
     @Autowired
     public AppreciationController(AppreciationService appreciationService, PeriodeRepository periodeRepository) {
@@ -106,7 +112,33 @@ public class AppreciationController {
         List<AppreciationTuteurDTO> appreciations = appreciationService.getAppreciationsByTuteurId(tuteurId);
         return ResponseEntity.ok(appreciations);
     }
+    @PostMapping("/send-verification-code")
+    public ResponseEntity<?> sendVerificationCode(@RequestBody VerificationCodeRequest request) {
+        try {
+            // Créer le message d'email
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(request.getEmail());
+            message.setSubject("Code de vérification pour l'évaluation de stage");
 
+            String content = String.format(
+                    "Bonjour %s %s,\n\n" +
+                            "Votre code de vérification pour l'évaluation de stage est : %s\n\n" +
+                            "Ce code est valable pendant 10 minutes.\n\n" +
+                            "Si vous n'avez pas demandé ce code, veuillez ignorer cet email.\n\n" +
+                            "Cordialement,\n" +
+                            "L'équipe d'évaluation de stage",
+                    request.getPrenom(), request.getNom(), request.getCode()
+            );
+            message.setText(content);
+            mailSender.send(message);
 
-
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'envoi de l'email: " + e.getMessage());
+        }
+    }
 }
+
+
+
+

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "../api";
+import AuthService from "../services/AuthService";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -36,17 +37,40 @@ export default function Dashboard() {
     const [error, setError] = useState(null);
     const [stats, setStats] = useState(null);
 
+// Dans useEffect du Dashboard.jsx
     useEffect(() => {
+        // Vérifier l'authentification
+        const user = AuthService.getCurrentUser();
+        if (!user || !user.token) {
+            console.log("Non authentifié, redirection vers login");
+            window.location.href = "/login";
+            return;
+        }
+
+        // Configurer le token pour toutes les requêtes axios
+        console.log("Configuration du token pour axios");
+        axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+
+        // Charger les statistiques
+        setLoading(true);
         axios
             .get(`${API_URL}/api/statistiques/dashboard`)
             .then((res) => {
+                console.log("Statistiques chargées avec succès");
                 setStats(res.data);
                 setLoading(false);
             })
             .catch((err) => {
                 console.error("Erreur lors du chargement des statistiques:", err);
-                setError("Erreur lors du chargement des statistiques");
-                setLoading(false);
+
+                if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+                    console.log("Erreur d'authentification, déconnexion");
+                    AuthService.logout();
+                    window.location.href = "/login";
+                } else {
+                    setError("Erreur lors du chargement des statistiques");
+                    setLoading(false);
+                }
             });
     }, []);
 

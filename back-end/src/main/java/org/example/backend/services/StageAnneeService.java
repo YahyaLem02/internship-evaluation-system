@@ -201,5 +201,12 @@ public StageAnneeDTO getStageAnnee(Long id) {
                 .collect(Collectors.toList());
     }
 
+    public List<String> getAnneeUniversitaire() {
+        return stageAnneeRepository.findAll().stream()
+                .map(StageAnnee::getAnneeUniversitaire)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
 
 }

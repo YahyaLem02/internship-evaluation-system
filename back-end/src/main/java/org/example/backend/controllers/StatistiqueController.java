@@ -10,6 +10,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/statistiques")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class StatistiqueController {
 
     @Autowired

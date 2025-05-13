@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { API_URL } from "../api";
-import { FaUser, FaUniversity, FaBuilding, FaCalendarAlt, FaClipboardCheck, FaBook, FaStar, FaAward, FaCheckCircle, FaArrowRight, FaExclamationCircle, FaSpinner } from "react-icons/fa";
+import { FaUser, FaUniversity, FaBuilding, FaCalendarAlt, FaClipboardCheck, FaBook, FaStar, FaAward, FaCheckCircle, FaArrowRight, FaExclamationCircle, FaSpinner, FaEnvelope } from "react-icons/fa";
 
 const EVALUATION_CHOICES = {
     implication: [
@@ -66,6 +66,12 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
     const [checkingEmail, setCheckingEmail] = useState(false);
     const [emailChecked, setEmailChecked] = useState(false);
     const [tuteurExistsMessage, setTuteurExistsMessage] = useState(null);
+    const [emailVerificationSent, setEmailVerificationSent] = useState(false);
+    const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
+    const [verificationCode, setVerificationCode] = useState("");
+    const [enteredCode, setEnteredCode] = useState("");
+    const [verificationError, setVerificationError] = useState("");
+    const [emailVerified, setEmailVerified] = useState(false);
 
     // Nouvel état pour le tuteur
     const [tuteur, setTuteur] = useState({
@@ -176,6 +182,10 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                     newErrors.entreprise = "L'entreprise est requise";
                     isValid = false;
                 }
+                if (!emailVerified) {
+                    newErrors.verification = "Veuillez vérifier votre email avant de continuer";
+                    isValid = false;
+                }
                 break;
             case 2:
                 if (!stage.description.trim()) {
@@ -267,6 +277,47 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                 : c
         ));
     }
+
+    const sendVerificationEmail = async () => {
+        if (!tuteur.email || !tuteur.email.trim() || !/^\S+@\S+\.\S+$/.test(tuteur.email)) {
+            setErrors(prev => ({ ...prev, email: "Email invalide" }));
+            return;
+        }
+
+        try {
+            setIsVerifyingEmail(true);
+
+            // Générer un code à 6 chiffres
+            const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+            setVerificationCode(generatedCode);
+
+            // Appel API pour envoyer l'email avec le code
+            await axios.post(`${API_URL}/api/appreciation/send-verification-code`, {
+                email: tuteur.email,
+                nom: tuteur.nom,
+                prenom: tuteur.prenom,
+                code: generatedCode
+            });
+
+            setEmailVerificationSent(true);
+            setVerificationError("");
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du code de vérification:", error);
+            setVerificationError("Impossible d'envoyer le code de vérification. Veuillez réessayer.");
+        } finally {
+            setIsVerifyingEmail(false);
+        }
+    };
+
+    // Fonction pour vérifier le code
+    const verifyCode = () => {
+        if (enteredCode === verificationCode) {
+            setEmailVerified(true);
+            setVerificationError("");
+        } else {
+            setVerificationError("Code incorrect. Veuillez réessayer.");
+        }
+    };
 
     function nextStep() {
         if (validateStep(step)) {
@@ -391,7 +442,10 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                                         setTuteur(t => ({ ...t, email: e.target.value }));
                                         setEmailChecked(false);
                                         setTuteurExistsMessage(null);
+                                        setEmailVerified(false);
+                                        setEmailVerificationSent(false);
                                     }}
+                                    disabled={emailVerified}
                                 />
                                 {checkingEmail && (
                                     <div className="absolute right-3 top-2">
@@ -411,6 +465,82 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                                 }`}>
                                     <FaExclamationCircle className="mr-2" />
                                     {tuteurExistsMessage.text}
+                                </div>
+                            )}
+
+                            {/* Section de vérification d'email */}
+                            {!emailVerified && tuteur.email && !/^\S+@\S+\.\S+$/.test(tuteur.email) === false && (
+                                <div className="mt-4 border border-[#B7C9E2] rounded-xl p-4 bg-[#F0F4F8]">
+                                    <h3 className="text-[#41729F] font-semibold mb-2 flex items-center">
+                                        <FaEnvelope className="mr-2" />Vérification de l'email
+                                    </h3>
+
+                                    {!emailVerificationSent ? (
+                                        <div>
+                                            <p className="text-sm text-[#274472] mb-3">
+                                                Nous devons vérifier que vous êtes bien le propriétaire de cette adresse email.
+                                            </p>
+                                            <button
+                                                type="button"
+                                                className={`py-2 px-4 rounded-lg ${isVerifyingEmail ? 'bg-gray-300' : 'bg-[#41729F]'} text-white font-medium flex items-center`}
+                                                onClick={sendVerificationEmail}
+                                                disabled={isVerifyingEmail}
+                                            >
+                                                {isVerifyingEmail ? (
+                                                    <>
+                                                        <FaSpinner className="animate-spin mr-2" />
+                                                        Envoi en cours...
+                                                    </>
+                                                ) : (
+                                                    <>Envoyer un code de vérification</>
+                                                )}
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <p className="text-sm text-[#274472] mb-3">
+                                                Un code de vérification a été envoyé à {tuteur.email}.
+                                                Veuillez entrer ce code ci-dessous:
+                                            </p>
+                                            <div className="flex items-center gap-3">
+                                                <input
+                                                    type="text"
+                                                    className="w-40 px-3 py-2 rounded-xl border border-[#B7C9E2] bg-white text-[#41729F] text-center text-xl font-bold tracking-widest"
+                                                    value={enteredCode}
+                                                    onChange={e => setEnteredCode(e.target.value.replace(/[^0-9]/g, '').substring(0, 6))}
+                                                    placeholder="123456"
+                                                    maxLength={6}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="py-2 px-4 rounded-lg bg-[#41729F] text-white font-medium"
+                                                    onClick={verifyCode}
+                                                >
+                                                    Vérifier
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    className="py-2 px-4 rounded-lg bg-gray-200 text-[#274472] font-medium text-sm"
+                                                    onClick={sendVerificationEmail}
+                                                    disabled={isVerifyingEmail}
+                                                >
+                                                    {isVerifyingEmail ? 'Envoi...' : 'Renvoyer'}
+                                                </button>
+                                            </div>
+                                            {verificationError && (
+                                                <p className="text-red-500 text-xs mt-2">{verificationError}</p>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* Message de confirmation lorsque l'email est vérifié */}
+                            {emailVerified && (
+                                <div className="mt-2 p-2 rounded-md text-sm flex items-center bg-green-100 text-green-800">
+                                    <FaCheckCircle className="mr-2" />
+                                    Email vérifié avec succès !
                                 </div>
                             )}
                         </div>
@@ -448,13 +578,25 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                             {errors.entreprise && <p className="text-red-500 text-xs mt-1">{errors.entreprise}</p>}
                         </div>
                     </div>
+
+                    {errors.verification && (
+                        <div className="mt-4 p-3 bg-red-100 text-red-800 rounded-lg">
+                            {errors.verification}
+                        </div>
+                    )}
+
                     <div className="flex justify-end mt-6">
                         <motion.button
                             type="button"
-                            className="py-3 px-6 rounded-xl bg-[#41729F] text-white font-bold shadow hover:bg-[#5885AF] transition flex items-center"
+                            className={`py-3 px-6 rounded-xl font-bold shadow transition flex items-center ${
+                                emailVerified
+                                    ? "bg-[#41729F] text-white hover:bg-[#5885AF]"
+                                    : "bg-gray-400 text-white cursor-not-allowed"
+                            }`}
                             onClick={nextStep}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
+                            whileHover={emailVerified ? { scale: 1.05 } : {}}
+                            whileTap={emailVerified ? { scale: 0.95 } : {}}
+                            disabled={!emailVerified}
                         >
                             Suivant <FaArrowRight className="ml-2" />
                         </motion.button>
