@@ -5,10 +5,10 @@ import org.example.backend.dto.StagiaireDetailDTO;
 import org.example.backend.services.StagaireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/stagaire")
@@ -56,4 +56,15 @@ public class StagaireController {
         }
         return ResponseEntity.ok(stagiaire);
     }
+
+    @GetMapping("/me")
+    public ResponseEntity<StagiaireDetailDTO> getCurrentStagiaire(Authentication authentication) {
+        Long stagiaireId = Long.parseLong(authentication.getName());
+        StagiaireDetailDTO stagiaire = stagiaireService.getStagiaireById(stagiaireId);
+        if (stagiaire == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(stagiaire);
+    }
+
 }

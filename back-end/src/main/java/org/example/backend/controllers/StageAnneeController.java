@@ -33,6 +33,11 @@ public class StageAnneeController {
         return stageAnneeService.getAllStageAnnees();
     }
 
+    @GetMapping("/GetAnneeUniversitaire")
+    public List<String> getAnneeUniversitaire() {
+        return stageAnneeService.getAnneeUniversitaire();
+    }
+
     // Endpoint pour obtenir un StageAnnee par ID
     @GetMapping("/{id}")
     public StageAnneeDTO getStageAnnee(@PathVariable Long id) {

@@ -3,22 +3,35 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../api";
 import { motion } from "framer-motion";
-import { FaSearch, FaFilter, FaGraduationCap, FaBuilding, FaCalendarAlt, FaEye } from "react-icons/fa";
+import { FaSearch, FaFilter, FaGraduationCap, FaBuilding, FaCalendarAlt, FaEye, FaTrash, FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
 
 export default function StagiairesList() {
     const [stagiaires, setStagiaires] = useState([]);
-    const [stageAnnees, setStageAnnees] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [stagiaireToDelete, setStagiaireToDelete] = useState(null);
+    const [deleteLoading, setDeleteLoading] = useState(false);
+
+    // État pour l'alerte de succès
+    const [successAlert, setSuccessAlert] = useState({ show: false, message: "" });
 
     // États pour les filtres
     const [searchTerm, setSearchTerm] = useState("");
-    const [stageAnneeFilter, setStageAnneeFilter] = useState("");
     const [evaluationFilter, setEvaluationFilter] = useState("all"); // 'all', 'evaluated', 'non-evaluated'
 
-    useEffect(() => {
-        // Charger tous les stagiaires
-        axios.get(`${API_URL}/api/stagaire`) // Correction de stagaire à stagiaires
+    // Fonction pour afficher l'alerte de succès temporairement
+    const showSuccessAlert = (message) => {
+        setSuccessAlert({ show: true, message });
+        // Masquer l'alerte après 5 secondes
+        setTimeout(() => {
+            setSuccessAlert({ show: false, message: "" });
+        }, 5000);
+    };
+
+    const fetchStagiaires = () => {
+        setLoading(true);
+        axios.get(`${API_URL}/api/stagaire`)
             .then(res => {
                 console.log("Données des stagiaires:", res.data);
                 setStagiaires(res.data);
@@ -26,20 +39,45 @@ export default function StagiairesList() {
             .catch(err => {
                 console.error("Erreur de chargement des stagiaires:", err);
                 setError("Erreur lors du chargement des stagiaires");
-            });
-
-        // Charger les stages-années pour le filtre
-        axios.get(`${API_URL}/api/stageAnnee`)
-            .then(res => {
-                setStageAnnees(res.data);
-            })
-            .catch(err => {
-                console.error("Erreur de chargement des stages-années:", err);
             })
             .finally(() => {
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        // Charger tous les stagiaires
+        fetchStagiaires();
     }, []);
+
+    // Fonction pour supprimer un stagiaire
+    const deleteStagiaire = async (id) => {
+        setDeleteLoading(true);
+        try {
+            await axios.delete(`${API_URL}/api/stagaire/${id}`);
+
+            // Rafraîchir la liste après suppression
+            fetchStagiaires();
+
+            // Fermer le modal
+            setDeleteModalOpen(false);
+            setStagiaireToDelete(null);
+
+            // Afficher l'alerte de succès
+            showSuccessAlert(`Le stagiaire a été supprimé avec succès.`);
+        } catch (err) {
+            console.error("Erreur lors de la suppression du stagiaire:", err);
+            setError("Une erreur est survenue lors de la suppression");
+        } finally {
+            setDeleteLoading(false);
+        }
+    };
+
+    // Ouvrir le modal de confirmation de suppression
+    const openDeleteModal = (stagiaire) => {
+        setStagiaireToDelete(stagiaire);
+        setDeleteModalOpen(true);
+    };
 
     // Filtrer les stagiaires
     const filteredStagiaires = stagiaires.filter(stagiaire => {
@@ -49,34 +87,42 @@ export default function StagiairesList() {
             stagiaire.prenom?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             stagiaire.email?.toLowerCase().includes(searchTerm.toLowerCase());
 
-        // Filtre par année de stage
-        let matchesStageAnnee = true;
-        if (stageAnneeFilter !== "") {
-            // Vérifier d'abord dans les stages (s'il y en a)
-            if (stagiaire.stages && stagiaire.stages.length > 0) {
-                matchesStageAnnee = stagiaire.stages.some(stage =>
-                    stage.stageAnneeId === parseInt(stageAnneeFilter)
-                );
-            } else {
-                // Si pas de stages, vérifier si le stagiaire a un champ entreprise
-                // (ce qui suggère qu'il a au moins un stage, même si le tableau stages est absent)
-                matchesStageAnnee = false;
-            }
-        }
-
         // Filtre par évaluation
         const matchesEvaluation = evaluationFilter === "all" ||
             (evaluationFilter === "evaluated" && stagiaire.evaluated) ||
             (evaluationFilter === "non-evaluated" && !stagiaire.evaluated);
 
-        return matchesSearch && matchesStageAnnee && matchesEvaluation;
+        return matchesSearch && matchesEvaluation;
     });
 
-    if (loading) return <div className="p-6 text-center">Chargement...</div>;
-    if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
+    if (loading) return (
+        <div className="p-6 flex justify-center items-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#41729F]"></div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="p-6 text-center text-red-500 bg-red-50 rounded-lg">
+            <FaExclamationTriangle className="inline-block mr-2" />
+            {error}
+        </div>
+    );
 
     return (
-        <div className="p-6">
+        <div className="p-6 relative">
+            {/* Alerte de succès */}
+            {successAlert.show && (
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="fixed top-5 right-5 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-lg z-50 flex items-center"
+                >
+                    <FaCheckCircle className="text-green-500 mr-2" />
+                    {successAlert.message}
+                </motion.div>
+            )}
+
             <h1 className="text-2xl font-bold text-[#41729F] mb-6 flex items-center gap-2">
                 <FaGraduationCap /> Gestion des Stagiaires
             </h1>
@@ -98,23 +144,6 @@ export default function StagiairesList() {
                     </div>
                 </div>
 
-                {/* Filtre par année */}
-                <div className="md:w-1/4">
-                    <label className="text-sm font-medium text-[#274472] block mb-1">Année de Stage</label>
-                    <select
-                        value={stageAnneeFilter}
-                        onChange={(e) => setStageAnneeFilter(e.target.value)}
-                        className="w-full p-2 rounded-lg border border-[#C3CFE2] focus:outline-none focus:ring-2 focus:ring-[#5885AF]"
-                    >
-                        <option value="">Toutes les années</option>
-                        {stageAnnees.map(annee => (
-                            <option key={annee.id} value={annee.id}>
-                                {annee.anneeUniversitaire}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
                 {/* Filtre par évaluation */}
                 <div className="md:w-1/4">
                     <label className="text-sm font-medium text-[#274472] block mb-1">Évaluation</label>
@@ -133,7 +162,6 @@ export default function StagiairesList() {
                 <button
                     onClick={() => {
                         setSearchTerm("");
-                        setStageAnneeFilter("");
                         setEvaluationFilter("all");
                     }}
                     className="bg-[#F5F7FA] text-[#41729F] px-4 py-2 rounded-lg hover:bg-[#E5EAF0] transition flex items-center gap-2"
@@ -175,11 +203,9 @@ export default function StagiairesList() {
                                     <td className="px-6 py-4 text-[#5885AF]">{stagiaire.email}</td>
                                     <td className="px-6 py-4">{stagiaire.institution || "-"}</td>
                                     <td className="px-6 py-4">
-                                        {/* Utiliser directement le champ entreprise */}
                                         {stagiaire.entreprise || "-"}
                                     </td>
                                     <td className="px-6 py-4">
-                                        {/* Utiliser directement les champs dateDebut et dateFin */}
                                         {stagiaire.dateDebut && stagiaire.dateFin ? (
                                             <span>{stagiaire.dateDebut} → {stagiaire.dateFin}</span>
                                         ) : (
@@ -189,21 +215,32 @@ export default function StagiairesList() {
                                     <td className="px-6 py-4 text-center">
                                         {stagiaire.evaluated ? (
                                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-green-100 text-green-800">
-                                                    Oui
-                                                </span>
+                                                Oui
+                                            </span>
                                         ) : (
                                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full bg-red-100 text-red-800">
-                                                    Non
-                                                </span>
+                                                Non
+                                            </span>
                                         )}
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        <Link
-                                            to={`/stagiaires/${stagiaire.id}`}
-                                            className="text-[#41729F] hover:text-[#274472] flex items-center gap-1 justify-center"
-                                        >
-                                            <FaEye /> Voir
-                                        </Link>
+                                        <div className="flex items-center justify-center gap-3">
+                                            <Link
+                                                to={`/stagiaires/${stagiaire.id}`}
+                                                className="text-[#41729F] hover:text-[#274472] flex items-center gap-1"
+                                            >
+                                                <FaEye /> Voir
+                                            </Link>
+                                            {/* Afficher le bouton de suppression uniquement pour les stagiaires non évalués */}
+                                            {!stagiaire.evaluated && (
+                                                <button
+                                                    onClick={() => openDeleteModal(stagiaire)}
+                                                    className="text-red-500 hover:text-red-700 flex items-center gap-1"
+                                                >
+                                                    <FaTrash /> Supprimer
+                                                </button>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -212,6 +249,50 @@ export default function StagiairesList() {
                     </div>
                 )}
             </div>
+
+            {/* Modal de confirmation de suppression */}
+            {deleteModalOpen && (
+                <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md"
+                    >
+                        <h3 className="text-xl font-bold text-[#41729F] mb-4 flex items-center gap-2">
+                            <FaExclamationTriangle className="text-red-500" /> Confirmation de suppression
+                        </h3>
+                        <p className="mb-6">
+                            Êtes-vous sûr de vouloir supprimer le stagiaire <strong>{stagiaireToDelete?.prenom} {stagiaireToDelete?.nom}</strong> ?
+                            Cette action est irréversible.
+                        </p>
+                        <div className="flex justify-end gap-3">
+                            <button
+                                onClick={() => setDeleteModalOpen(false)}
+                                className="px-4 py-2 bg-gray-200 rounded-lg text-gray-800 font-medium hover:bg-gray-300 transition"
+                                disabled={deleteLoading}
+                            >
+                                Annuler
+                            </button>
+                            <button
+                                onClick={() => deleteStagiaire(stagiaireToDelete.id)}
+                                className="px-4 py-2 bg-red-500 rounded-lg text-white font-medium hover:bg-red-600 transition flex items-center gap-2"
+                                disabled={deleteLoading}
+                            >
+                                {deleteLoading ? (
+                                    <>
+                                        <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                                        Suppression...
+                                    </>
+                                ) : (
+                                    <>
+                                        <FaTrash /> Supprimer
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
         </div>
     );
 }

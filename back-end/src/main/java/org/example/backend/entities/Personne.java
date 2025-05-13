@@ -15,6 +15,8 @@ public abstract class Personne {
     private String prenom;
     private String email;
     private String motDePasse;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
 
     public Personne() {
@@ -70,5 +72,12 @@ public abstract class Personne {
     public void setMotDePasse(String motDePasse) {
         this.motDePasse = motDePasse;
     }
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
 
 }
