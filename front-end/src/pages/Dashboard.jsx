@@ -12,13 +12,12 @@ import {
     Title,
     Tooltip,
     Legend,
-    ArcElement,
-    RadialLinearScale,
+    ArcElement
 } from "chart.js";
-import { Bar, Pie, Line, Doughnut, Radar } from "react-chartjs-2";
+import { Bar, Pie, Doughnut } from "react-chartjs-2";
 import { FaGraduationCap, FaChalkboardTeacher, FaBuilding, FaClipboardCheck } from "react-icons/fa";
 
-// Enregistrer les composants ChartJS
+// Enregistrer les composants ChartJS nécessaires
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -28,8 +27,7 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
-    ArcElement,
-    RadialLinearScale
+    ArcElement
 );
 
 export default function Dashboard() {
@@ -37,7 +35,6 @@ export default function Dashboard() {
     const [error, setError] = useState(null);
     const [stats, setStats] = useState(null);
 
-// Dans useEffect du Dashboard.jsx
     useEffect(() => {
         // Vérifier l'authentification
         const user = AuthService.getCurrentUser();
@@ -74,17 +71,45 @@ export default function Dashboard() {
             });
     }, []);
 
-    if (loading) return <div className="p-6 text-center">Chargement...</div>;
-    if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
-    if (!stats) return <div className="p-6 text-center">Aucune donnée disponible</div>;
+    if (loading) return (
+        <div className="flex items-center justify-center h-96">
+            <div>
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#41729F] mx-auto mb-6"></div>
+                <p className="text-[#41729F] font-medium">Chargement des statistiques...</p>
+            </div>
+        </div>
+    );
+
+    if (error) return (
+        <div className="flex items-center justify-center h-96">
+            <div className="text-center">
+                <div className="text-red-500 font-bold text-xl mb-4">Erreur</div>
+                <p className="text-red-400">{error}</p>
+            </div>
+        </div>
+    );
+
+    if (!stats) return (
+        <div className="flex items-center justify-center h-96">
+            <div className="text-center text-[#5885AF] font-medium">
+                Aucune donnée statistique disponible
+            </div>
+        </div>
+    );
+
+    // Limiter les données pour une meilleure lisibilité
+    const limitedStagesByAnnee = stats.stagesByAnnee.slice(0, 6);
+    const limitedStagesByEntreprise = stats.stagesByEntreprise.slice(0, 5);
+    const limitedAverageNotesByCompetence = stats.averageNotesByCompetence.slice(0, 6);
+    const limitedStagiairesByInstitution = stats.stagiairesByInstitution.slice(0, 6);
 
     // Préparer les données pour les graphiques
     const stagesByAnneeData = {
-        labels: stats.stagesByAnnee.map((item) => item.annee),
+        labels: limitedStagesByAnnee.map((item) => item.annee),
         datasets: [
             {
                 label: "Nombre de stages",
-                data: stats.stagesByAnnee.map((item) => item.nombre),
+                data: limitedStagesByAnnee.map((item) => item.nombre),
                 backgroundColor: "rgba(65, 114, 159, 0.7)",
                 borderColor: "rgba(65, 114, 159, 1)",
                 borderWidth: 1,
@@ -93,11 +118,11 @@ export default function Dashboard() {
     };
 
     const stagesByEntrepriseData = {
-        labels: stats.stagesByEntreprise.map((item) => item.entreprise),
+        labels: limitedStagesByEntreprise.map((item) => item.entreprise),
         datasets: [
             {
                 label: "Nombre de stages",
-                data: stats.stagesByEntreprise.map((item) => item.nombre),
+                data: limitedStagesByEntreprise.map((item) => item.nombre),
                 backgroundColor: [
                     "rgba(65, 114, 159, 0.7)",
                     "rgba(88, 133, 175, 0.7)",
@@ -131,11 +156,11 @@ export default function Dashboard() {
     };
 
     const averageNotesByCompetenceData = {
-        labels: stats.averageNotesByCompetence.map((item) => item.competence),
+        labels: limitedAverageNotesByCompetence.map((item) => item.competence),
         datasets: [
             {
                 label: "Note moyenne",
-                data: stats.averageNotesByCompetence.map((item) => item.moyenne),
+                data: limitedAverageNotesByCompetence.map((item) => item.moyenne),
                 backgroundColor: "rgba(255, 159, 64, 0.7)",
                 borderColor: "rgba(255, 159, 64, 1)",
                 borderWidth: 1,
@@ -143,163 +168,201 @@ export default function Dashboard() {
         ],
     };
 
+    const stagiairesByInstitutionData = {
+        labels: limitedStagiairesByInstitution.map((item) => item.institution || "Non spécifié"),
+        datasets: [
+            {
+                label: "Nombre de stagiaires",
+                data: limitedStagiairesByInstitution.map((item) => item.nombre),
+                backgroundColor: "rgba(88, 133, 175, 0.7)",
+                borderColor: "rgba(88, 133, 175, 1)",
+                borderWidth: 1,
+            },
+        ],
+    };
+
+    // Options communes pour tous les graphiques
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+            padding: 20
+        }
+    };
+
+    // Options pour les graphiques circulaires
+    const pieOptions = {
+        ...commonOptions,
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    boxWidth: 12,
+                    font: {
+                        size: 11
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.raw || 0;
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = Math.round((value / total) * 100);
+                        return `${label}: ${value} (${percentage}%)`;
+                    }
+                }
+            }
+        },
+        cutout: '50%' // Pour le Doughnut, utilisé également pour la cohérence avec Pie
+    };
+
+    // Options pour les graphiques à barres
+    const barOptions = {
+        ...commonOptions,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    font: {
+                        size: 10
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 10
+                    },
+                    maxRotation: 45,
+                    minRotation: 45
+                }
+            }
+        }
+    };
+
+    // Options pour les graphiques à barres horizontales
+    const horizontalBarOptions = {
+        ...commonOptions,
+        indexAxis: 'y',
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            x: {
+                beginAtZero: true,
+                ticks: {
+                    font: {
+                        size: 10
+                    }
+                }
+            },
+            y: {
+                ticks: {
+                    font: {
+                        size: 10
+                    }
+                }
+            }
+        }
+    };
+
     return (
-        <div className="p-6">
+        <div className="p-6 bg-[#F5F7FA]">
             <h1 className="text-2xl font-bold text-[#41729F] mb-6">Tableau de bord</h1>
 
             {/* Cartes statistiques */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 <StatCard
                     title="Stagiaires"
                     value={stats.totalStagiaires}
                     icon={<FaGraduationCap />}
-                    color="bg-blue-500"
+                    color="bg-[#41729F]"
+                    textColor="text-[#41729F]"
                 />
                 <StatCard
                     title="Tuteurs"
                     value={stats.totalTuteurs}
                     icon={<FaChalkboardTeacher />}
-                    color="bg-green-500"
+                    color="bg-[#5885AF]"
+                    textColor="text-[#5885AF]"
                 />
                 <StatCard
                     title="Stages"
                     value={stats.totalStages}
                     icon={<FaBuilding />}
-                    color="bg-purple-500"
+                    color="bg-[#274472]"
+                    textColor="text-[#274472]"
                 />
                 <StatCard
                     title="Appréciations"
                     value={stats.totalAppreciations}
                     icon={<FaClipboardCheck />}
-                    color="bg-yellow-500"
+                    color="bg-[#B7C9E2]"
+                    textColor="text-[#5885AF]"
                 />
             </div>
 
-            {/* Graphiques */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-xl font-bold text-[#41729F] mb-4">Stages par année universitaire</h2>
-                    <Bar data={stagesByAnneeData} />
+            {/* Première rangée de graphiques */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                {/* Stages par année universitaire */}
+                <div className="bg-white p-4 rounded-xl shadow-md">
+                    <h2 className="text-lg font-bold text-[#41729F] mb-2">Stages par année universitaire</h2>
+                    <div className="h-72">
+                        <Bar data={stagesByAnneeData} options={barOptions} />
+                    </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-xl font-bold text-[#41729F] mb-4">Top entreprises d'accueil</h2>
-                    <Pie data={stagesByEntrepriseData} />
-                </div>
-            </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-xl font-bold text-[#41729F] mb-4">Stages évalués vs non évalués</h2>
-                    <Doughnut data={stagesByEvaluationStatusData} />
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-md">
-                    <h2 className="text-xl font-bold text-[#41729F] mb-4">Notes moyennes par compétence</h2>
-                    <Bar data={averageNotesByCompetenceData} />
+                {/* Notes moyennes par compétence */}
+                <div className="bg-white p-4 rounded-xl shadow-md">
+                    <h2 className="text-lg font-bold text-[#41729F] mb-2">Notes moyennes par compétence</h2>
+                    <div className="h-72">
+                        <Bar data={averageNotesByCompetenceData} options={barOptions} />
+                    </div>
                 </div>
             </div>
 
-            {/* Distribution des stages dans le temps */}
-            <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                <h2 className="text-xl font-bold text-[#41729F] mb-4">Distribution des stages dans le temps</h2>
-                <Line
-                    data={{
-                        labels: stats.stageDistributionByMonth.map((item) => `${item.mois}/${item.annee}`),
-                        datasets: [
-                            {
-                                label: "Nombre de stages",
-                                data: stats.stageDistributionByMonth.map((item) => item.nombre),
-                                backgroundColor: "rgba(65, 114, 159, 0.5)",
-                                borderColor: "rgba(65, 114, 159, 1)",
-                                tension: 0.3,
-                                fill: true,
-                            },
-                        ],
-                    }}
-                />
-            </div>
-
-            {/* Distribution des stagiaires par institution */}
-            <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                <h2 className="text-xl font-bold text-[#41729F] mb-4">Stagiaires par institution</h2>
-                <Bar
-                    data={{
-                        labels: stats.stagiairesByInstitution.map((item) => item.institution),
-                        datasets: [
-                            {
-                                label: "Nombre de stagiaires",
-                                data: stats.stagiairesByInstitution.map((item) => item.nombre),
-                                backgroundColor: "rgba(88, 133, 175, 0.7)",
-                                borderColor: "rgba(88, 133, 175, 1)",
-                                borderWidth: 1,
-                            },
-                        ],
-                    }}
-                />
-            </div>
-
-            {/* Top tuteurs */}
-            <div className="bg-white p-6 rounded-xl shadow-md mb-8">
-                <h2 className="text-xl font-bold text-[#41729F] mb-4">Top 5 tuteurs les plus actifs</h2>
-                <Bar
-                    data={{
-                        labels: stats.topTuteurs.map((item) => `${item.nom} ${item.prenom}`),
-                        datasets: [
-                            {
-                                label: "Nombre d'appréciations",
-                                data: stats.topTuteurs.map((item) => item.nombre),
-                                backgroundColor: "rgba(75, 192, 192, 0.7)",
-                                borderColor: "rgba(75, 192, 192, 1)",
-                                borderWidth: 1,
-                            },
-                        ],
-                    }}
-                />
-            </div>
-
-            {/* Distribution des évaluations */}
-            <div className="bg-white p-6 rounded-xl shadow-md">
-                <h2 className="text-xl font-bold text-[#41729F] mb-4">Distribution des évaluations</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {[...new Set(stats.evaluationDistribution.map((item) => item.categorie))].map((categorie) => {
-                        const categorieData = stats.evaluationDistribution.filter((item) => item.categorie === categorie);
-                        return (
-                            <div key={categorie} className="bg-[#F5F7FA] p-4 rounded-lg">
-                                <h3 className="font-semibold text-[#274472] mb-2">{categorie}</h3>
-                                <Pie
-                                    data={{
-                                        labels: categorieData.map((item) => item.valeur),
-                                        datasets: [
-                                            {
-                                                data: categorieData.map((item) => item.nombre),
-                                                backgroundColor: [
-                                                    "rgba(255, 99, 132, 0.7)",
-                                                    "rgba(54, 162, 235, 0.7)",
-                                                    "rgba(255, 206, 86, 0.7)",
-                                                    "rgba(75, 192, 192, 0.7)",
-                                                    "rgba(153, 102, 255, 0.7)",
-                                                ],
-                                                borderColor: [
-                                                    "rgba(255, 99, 132, 1)",
-                                                    "rgba(54, 162, 235, 1)",
-                                                    "rgba(255, 206, 86, 1)",
-                                                    "rgba(75, 192, 192, 1)",
-                                                    "rgba(153, 102, 255, 1)",
-                                                ],
-                                                borderWidth: 1,
-                                            },
-                                        ],
-                                    }}
-                                    options={{
-                                        plugins: {
-                                            legend: {
-                                                position: "right",
-                                            },
-                                        },
-                                    }}
-                                />
+            {/* Deuxième rangée de graphiques */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+                {/* Diagrammes circulaires ensemble */}
+                <div className="grid grid-cols-1 gap-4">
+                    {/* Top entreprises d'accueil */}
+                    <div className="bg-white p-4 rounded-xl shadow-md">
+                        <h2 className="text-lg font-bold text-[#41729F] mb-2 text-center">Top entreprises d'accueil</h2>
+                        <div className="h-72 flex items-center justify-center">
+                            <div className="w-full h-full max-w-[350px]">
+                                <Pie data={stagesByEntrepriseData} options={pieOptions} />
                             </div>
-                        );
-                    })}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 gap-4">
+                    {/* Stages évalués vs non évalués */}
+                    <div className="bg-white p-4 rounded-xl shadow-md">
+                        <h2 className="text-lg font-bold text-[#41729F] mb-2 text-center">Stages évalués vs non évalués</h2>
+                        <div className="h-72 flex items-center justify-center">
+                            <div className="w-full h-full max-w-[350px]">
+                                <Doughnut data={stagesByEvaluationStatusData} options={pieOptions} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Stagiaires par institution */}
+            <div className="bg-white p-4 rounded-xl shadow-md mb-4">
+                <h2 className="text-lg font-bold text-[#41729F] mb-2 text-center">Stagiaires par institution</h2>
+                <div className="h-72">
+                    <Bar data={stagiairesByInstitutionData} options={horizontalBarOptions} />
                 </div>
             </div>
         </div>
@@ -307,15 +370,17 @@ export default function Dashboard() {
 }
 
 // Composant pour les cartes statistiques
-function StatCard({ title, value, icon, color }) {
+function StatCard({ title, value, icon, color, textColor }) {
     return (
-        <div className="bg-white rounded-xl shadow-md p-6 transition-transform hover:scale-105">
+        <div className="bg-white rounded-xl shadow-md p-4 transition hover:shadow-lg">
             <div className="flex items-center justify-between">
                 <div>
-                    <h3 className="text-gray-500 text-sm">{title}</h3>
-                    <p className="text-3xl font-bold text-[#274472]">{value}</p>
+                    <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
+                    <p className={`text-2xl font-bold ${textColor}`}>{value}</p>
                 </div>
-                <div className={`p-3 rounded-full ${color} text-white text-xl`}>{icon}</div>
+                <div className={`p-2 rounded-full ${color} text-white flex items-center justify-center`} style={{ width: '40px', height: '40px' }}>
+                    {icon}
+                </div>
             </div>
         </div>
     );

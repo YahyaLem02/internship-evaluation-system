@@ -8,6 +8,8 @@ public class JwtAuthenticationResponse {
     private String prenom;
     private String role;
 
+    private Boolean isSuperAdmin = false;
+
     // Constructeurs
     public JwtAuthenticationResponse() {
     }
@@ -22,6 +24,15 @@ public class JwtAuthenticationResponse {
         this.nom = nom;
         this.prenom = prenom;
         this.role = role;
+    }
+    public JwtAuthenticationResponse(String token, Long userId, String email, String nom, String prenom, String role, Boolean isSuperAdmin) {
+        this.token = token;
+        this.userId = userId;
+        this.email = email;
+        this.nom = nom;
+        this.prenom = prenom;
+        this.role = role;
+        this.isSuperAdmin = isSuperAdmin;
     }
     // Getters et setters
     public String getToken() {
@@ -59,6 +70,12 @@ public class JwtAuthenticationResponse {
     }
     public void setRole(String role) {
         this.role = role;
+    }
+    public Boolean getSuperAdmin() {
+        return isSuperAdmin;
+    }
+    public void setSuperAdmin(Boolean superAdmin) {
+        isSuperAdmin = superAdmin;
     }
 
 

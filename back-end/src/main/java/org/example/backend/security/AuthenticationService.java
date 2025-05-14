@@ -58,6 +58,7 @@ public class AuthenticationService {
                 response.setNom(admin.getNom());
                 response.setPrenom(admin.getPrenom());
                 response.setRole("ADMIN");
+                response.setSuperAdmin(admin.isSuperAdmin());
             } else {
                 Optional<Stagiaire> stagiaireOpt = stagiaireRepository.findByEmail(request.getEmail());
                 if (stagiaireOpt.isPresent()) {

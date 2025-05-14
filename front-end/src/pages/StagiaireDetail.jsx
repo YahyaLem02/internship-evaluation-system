@@ -257,6 +257,46 @@ function AppreciationModal({ isOpen, onClose, appreciation }) {
         e.stopPropagation();
     };
 
+    // Fonction pour déterminer la couleur de fond en fonction de la valeur d'évaluation
+    const getEvaluationBadgeColor = (value) => {
+        switch(value) {
+            case "Excellente":
+                return "bg-green-600 text-white";
+            case "Acceptable":
+                return "bg-blue-500 text-white";
+            case "Le juste nécessaire":
+                return "bg-yellow-500 text-white";
+            default:
+                return "bg-gray-500 text-white";
+        }
+    };
+
+    // Fonction pour déterminer la couleur de badge pour les compétences
+    const getCompetenceBadgeColor = (note) => {
+        const noteNum = parseInt(note);
+        if (isNaN(noteNum)) return "bg-gray-500";
+        if (noteNum >= 15) return "bg-green-600";
+        if (noteNum >= 10) return "bg-blue-500";
+        if (noteNum >= 5) return "bg-yellow-500";
+        return "bg-red-500";
+    };
+
+    // Fonction pour déterminer la couleur de badge pour les catégories
+    const getCategoryBadgeColor = (value) => {
+        switch(value) {
+            case "AUTONOME +":
+                return "bg-green-100 text-green-800 border border-green-200";
+            case "AUTONOME":
+                return "bg-blue-100 text-blue-800 border border-blue-200";
+            case "DÉBUTANT":
+                return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+            case "NA":
+                return "bg-gray-100 text-gray-600 border border-gray-200";
+            default:
+                return "bg-purple-100 text-purple-800 border border-purple-200";
+        }
+    };
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={onClose}>
             <motion.div
@@ -326,9 +366,15 @@ function AppreciationModal({ isOpen, onClose, appreciation }) {
                             <h4 className="text-xl font-semibold text-[#41729F] mb-2">Évaluations</h4>
                             <div className="grid grid-cols-1 gap-3">
                                 {appreciation.evaluations.map((evaluation, evalIndex) => (
-                                    <div key={evalIndex} className="flex justify-between p-2 bg-white rounded shadow-sm">
-                                        <span>{evaluation.categorie}</span>
-                                        <span className="font-bold text-[#41729F]">{evaluation.valeur}</span>
+                                    <div key={evalIndex} className="p-3 bg-white rounded shadow-sm">
+                                        <div className="font-medium text-[#274472] mb-1">
+                                            {evaluation.categorie}
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <span className={`px-3 py-1 rounded-full font-medium ${getEvaluationBadgeColor(evaluation.valeur)}`}>
+                                                {evaluation.valeur}
+                                            </span>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -340,23 +386,42 @@ function AppreciationModal({ isOpen, onClose, appreciation }) {
                         <div className="mb-6 p-4 bg-[#F5F7FA] rounded-lg">
                             <h4 className="text-xl font-semibold text-[#41729F] mb-2">Compétences</h4>
                             {appreciation.competences.map((comp, compIndex) => (
-                                <div key={compIndex} className="mb-4 p-3 bg-white rounded shadow-sm">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <span className="font-medium">{comp.intitule}</span>
-                                        <span className="font-bold px-2 py-1 bg-[#41729F] text-white rounded-lg">{comp.note}</span>
+                                <div key={compIndex} className="mb-4 p-4 bg-white rounded shadow-sm">
+                                    <div className="flex items-center mb-3">
+                                        <div className="flex-1">
+                                            <h5 className="text-lg font-semibold text-[#274472]">{comp.intitule}</h5>
+                                        </div>
+                                        <div className="ml-2">
+                                            <span className={`px-3 py-1 rounded-lg font-bold text-white ${getCompetenceBadgeColor(comp.note)}`}>
+                                                {comp.note}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     {comp.categories && comp.categories.length > 0 && (
-                                        <div className="mt-2 border-t pt-2">
-                                            <div className="font-medium text-[#274472] text-sm mb-1">Détails:</div>
+                                        <div className="mt-3 border-t border-gray-200 pt-3">
+                                            <div className="font-medium text-[#5885AF] text-sm mb-2">Détails des critères:</div>
                                             <div className="grid grid-cols-1 gap-2">
                                                 {comp.categories.map((cat, catIndex) => (
-                                                    <div key={catIndex} className="flex justify-between text-sm p-1 bg-[#F5F7FA] rounded">
-                                                        <span>{cat.intitule}</span>
-                                                        <span>{cat.valeur}</span>
+                                                    <div key={catIndex}
+                                                         className="p-3 bg-gray-50 rounded-lg">
+                                                        <div className="mb-1 font-medium text-sm text-gray-700">
+                                                            {cat.intitule}
+                                                        </div>
+                                                        <div className="flex justify-end">
+                                                            <span className={`px-2 py-1 rounded-md text-sm font-medium ${getCategoryBadgeColor(cat.valeur)}`}>
+                                                                {cat.valeur}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
+                                        </div>
+                                    )}
+
+                                    {comp.categories && comp.categories.length === 0 && (
+                                        <div className="text-sm text-gray-500 italic">
+                                            Aucun critère spécifié pour cette compétence
                                         </div>
                                     )}
                                 </div>

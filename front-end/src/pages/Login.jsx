@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
 
 const imageUrl =
-    "https://img.freepik.com/vecteurs-libre/illustration-emploi-stage_23-2148718493.jpg";
+    "https://img.freepik.com/free-vector/internship-job-concept-illustration_23-2148754785.jpg";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -107,12 +107,6 @@ export default function Login() {
                             {loading ? "Connexion en cours..." : "Se connecter"}
                         </motion.button>
                     </form>
-                    <div className="mt-6 text-center text-[#5885AF] text-sm">
-                        Pas encore de compte ?{" "}
-                        <a href="#" className="text-[#009688] hover:underline">
-                            Contactez l'administration
-                        </a>
-                    </div>
                 </motion.div>
                 {/* Image - à droite */}
                 <motion.div

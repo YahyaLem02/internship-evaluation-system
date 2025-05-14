@@ -55,6 +55,7 @@ public class SecurityConfig {
 
                         // Routes pour les stagiaires
                         .requestMatchers("/api/stagaire/me").hasAuthority("STAGIAIRE")
+                        .requestMatchers("/api/stagaire/{id}/change-password").hasAuthority("STAGIAIRE")
                         // Correction de l'expression access avec AuthorizationDecision
                         .requestMatchers("/api/stagaire/{id}").access((authentication, context) ->
                                 new AuthorizationDecision(

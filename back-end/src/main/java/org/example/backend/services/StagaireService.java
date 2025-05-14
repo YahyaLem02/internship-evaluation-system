@@ -10,6 +10,7 @@ import org.example.backend.repositories.PeriodeRepository;
 import org.example.backend.repositories.StagaireRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class StagaireService {
     private ModelMapper modelMapper;
     @Autowired
     private PeriodeRepository periodeRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public StagiaireDTO create(StagiaireDTO dto) {
@@ -264,4 +267,29 @@ public class StagaireService {
                 evaluated
         );
     }
+    @Transactional
+    public void changePassword(Long id, String currentPassword, String newPassword) {
+        Stagiaire stagiaire = stagiaireRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Stagiaire non trouvé avec id: " + id));
+
+        // Vérifier que le mot de passe actuel est correct
+        if (!passwordEncoder.matches(currentPassword, stagiaire.getMotDePasse())) {
+            throw new IllegalArgumentException("Mot de passe actuel incorrect");
+        }
+
+        // Vérifier que le nouveau mot de passe n'est pas vide
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nouveau mot de passe ne peut pas être vide");
+        }
+
+        // Vérifier la longueur minimale du mot de passe
+        if (newPassword.length() < 6) {
+            throw new IllegalArgumentException("Le mot de passe doit contenir au moins 6 caractères");
+        }
+
+        // Encoder et sauvegarder le nouveau mot de passe
+        stagiaire.setMotDePasse(passwordEncoder.encode(newPassword));
+        stagiaireRepository.save(stagiaire);
+    }
+
 }
