@@ -108,6 +108,18 @@ class AuthService {
             console.log("Aucun utilisateur connecté, pas de configuration des intercepteurs");
         }
     }
+
+    //delete admin
+    async deleteAdmin(adminId) {
+        try {
+            const response = await axios.delete(`${API_URL}/api/admin/${adminId}`);
+            console.log("Admin supprimé avec succès:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Erreur lors de la suppression de l'admin:", error);
+            throw error;
+        }
+    }
 }
 
 export default new AuthService();

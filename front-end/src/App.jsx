@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
+import ProfileAdmin from "./pages/ProfileAdmin.jsx";
+import ProfileStagiaire from "./pages/ProfileStagiaire.jsx"; // Importez le nouveau composant de profil stagiaire
 import Login from "./pages/Login";
 import StageAnneeList from "./pages/StageAnneeList.jsx";
 import StageAnneeForm from "./pages/StageAnneeForm.jsx";
@@ -15,9 +16,23 @@ import TuteursList from "./pages/TuteursList.jsx";
 import TuteurDetail from "./pages/TuteurDetail.jsx";
 import AdminCreate from "./pages/AdminCreate.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import StagiareDashboard from "./pages/StagiareDashboard.jsx"; // Importez le nouveau composant
+import StagiareDashboard from "./pages/StagiareDashboard.jsx";
+import AuthService from "./services/AuthService";
 
 export default function App() {
+    // Fonction pour déterminer le composant de profil à afficher en fonction du rôle
+    const ProfileComponent = () => {
+        const user = AuthService.getCurrentUser();
+        if (user && user.role === "ADMIN") {
+            return <ProfileAdmin />;
+        } else if (user && user.role === "STAGIAIRE") {
+            return <ProfileStagiaire />;
+        } else {
+            // Fallback si le rôle est inconnu
+            return <div>Profil non disponible</div>;
+        }
+    };
+
     return (
         <BrowserRouter>
             <Routes>
@@ -34,7 +49,13 @@ export default function App() {
                 }>
                     {/* Route par défaut pour les étudiants */}
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/profile" element={<Profile />} />
+
+                    {/* Route de profil qui utilise la fonction pour déterminer le composant */}
+                    <Route path="/profile" element={
+                        <ProtectedRoute>
+                            <ProfileComponent />
+                        </ProtectedRoute>
+                    } />
 
                     {/* Nouvelle route pour le dashboard étudiant */}
                     <Route path="/student-dashboard" element={<StagiareDashboard />} />

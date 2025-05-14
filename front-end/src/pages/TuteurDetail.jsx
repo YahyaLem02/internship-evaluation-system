@@ -54,6 +54,28 @@ export default function TuteurDetail() {
         setSelectedAppreciation(null);
     };
 
+    // Fonction pour déterminer le style de la valeur d'évaluation
+    const getEvaluationValueStyle = (value) => {
+        if (!value) return "text-gray-500 italic";
+
+        // Si c'est un texte long comme une observation
+        if (value.length > 20) {
+            return "text-gray-700 italic text-sm";
+        }
+
+        // Pour les évaluations courtes
+        switch(value) {
+            case "Excellente":
+                return "font-medium text-green-600";
+            case "Acceptable":
+                return "font-medium text-blue-600";
+            case "Le juste nécessaire":
+                return "font-medium text-yellow-600";
+            default:
+                return "font-medium text-[#41729F]";
+        }
+    };
+
     if (loading) return <div className="p-6 text-center">Chargement...</div>;
     if (error) return <div className="p-6 text-center text-red-500">{error}</div>;
     if (!tuteur) return <div className="p-6 text-center">Tuteur non trouvé</div>;
@@ -155,15 +177,19 @@ export default function TuteurDetail() {
                                 <div>
                                     <div className="text-sm font-medium text-[#274472] mb-1">Évaluations</div>
                                     {appreciation.evaluations && appreciation.evaluations.length > 0 ? (
-                                        <div className="grid grid-cols-2 gap-2">
+                                        <div className="grid grid-cols-1 gap-2">
                                             {appreciation.evaluations.slice(0, 4).map((evaluation, evalIdx) => (
-                                                <div key={evalIdx} className="flex justify-between text-sm p-1 bg-[#F5F7FA] rounded">
-                                                    <span>{evaluation.categorie}</span>
-                                                    <span className="font-medium">{evaluation.valeur}</span>
+                                                <div key={evalIdx} className="p-2 bg-[#F5F7FA] rounded">
+                                                    <div className="text-sm text-[#274472]">{evaluation.categorie}</div>
+                                                    <div className={`text-right ${getEvaluationValueStyle(evaluation.valeur)}`}>
+                                                        {evaluation.valeur && evaluation.valeur.length > 20
+                                                            ? `${evaluation.valeur.substring(0, 20)}...`
+                                                            : evaluation.valeur}
+                                                    </div>
                                                 </div>
                                             ))}
                                             {appreciation.evaluations.length > 4 && (
-                                                <div className="col-span-2 text-center text-sm text-[#5885AF] italic">
+                                                <div className="text-center text-sm text-[#5885AF] italic">
                                                     + {appreciation.evaluations.length - 4} autres évaluations
                                                 </div>
                                             )}
@@ -174,6 +200,28 @@ export default function TuteurDetail() {
                                         </div>
                                     )}
                                 </div>
+
+                                {/* Résumé des compétences */}
+                                {appreciation.competences && appreciation.competences.length > 0 && (
+                                    <div className="mt-4">
+                                        <div className="text-sm font-medium text-[#274472] mb-1">Compétences</div>
+                                        <div className="grid grid-cols-1 gap-2">
+                                            {appreciation.competences.slice(0, 3).map((comp, compIdx) => (
+                                                <div key={compIdx} className="flex justify-between items-center p-2 bg-[#F5F7FA] rounded">
+                                                    <div className="text-sm flex-1 mr-2">{comp.intitule}</div>
+                                                    <div className="flex-shrink-0 px-2 py-0.5 bg-[#41729F] text-white rounded text-xs">
+                                                        {comp.note}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {appreciation.competences.length > 3 && (
+                                                <div className="text-center text-sm text-[#5885AF] italic p-1">
+                                                    + {appreciation.competences.length - 3} autres compétences
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     ))}
@@ -193,4 +241,3 @@ export default function TuteurDetail() {
         </motion.div>
     );
 }
-

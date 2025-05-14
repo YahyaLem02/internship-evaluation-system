@@ -4,33 +4,13 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import AuthService from "../services/AuthService";
 
-// Définir les liens pour les différents rôles
-const links = {
-    // Liens pour les administrateurs
-    ADMIN: [
-        { to: "/dashboard", label: "Dashboard", icon: <FaGraduationCap /> },
-        { to: "/profile", label: "Profil", icon: <FaUser /> },
-        { to: "/stagiaires", label: "Stagiaires", icon: <FaGraduationCap /> },
-        { to: "/tuteurs", label: "Tuteurs", icon: <FaChalkboardTeacher /> },
-        { to: "/stage-annee", label: "Stage Année", icon: <FaCalendarAlt /> },
-        { to: "/admin/create", label: "Créer Admin", icon: <FaUserShield /> },
-        { to: "/settings", label: "Paramètres", icon: <FaCog /> }
-    ],
-
-    // Liens pour les stagiaires (uniquement profil, mon stage et paramètres)
-    STAGIAIRE: [
-        { to: "/profile", label: "Profil", icon: <FaUser /> },
-        { to: "/student-dashboard", label: "Mon stage", icon: <FaClipboardCheck /> },
-        { to: "/settings", label: "Paramètres", icon: <FaCog /> }
-    ]
-};
-
 export default function Sidebar() {
     const { pathname } = useLocation();
     const [userRole, setUserRole] = useState(null);
     const [userInfo, setUserInfo] = useState({ nom: "", prenom: "" });
     const [loading, setLoading] = useState(true);
     const [currentDate, setCurrentDate] = useState('');
+    const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
     useEffect(() => {
         // Récupérer la date actuelle et la formater
@@ -60,6 +40,9 @@ export default function Sidebar() {
                     nom: user.nom || "",
                     prenom: user.prenom || ""
                 });
+
+                // Vérifier si l'utilisateur est un superAdmin
+                setIsSuperAdmin(user.superAdmin === true);
             } else {
                 console.log("Aucun utilisateur trouvé dans le localStorage");
                 window.location.href = '/login';
@@ -71,8 +54,42 @@ export default function Sidebar() {
         }
     }, []);
 
-    // Obtenir les liens appropriés pour le rôle de l'utilisateur
-    const navLinks = userRole ? links[userRole] || [] : [];
+    // Définir les liens en fonction du rôle et des permissions de l'utilisateur
+    const getNavLinks = () => {
+        // Liens de base pour tous les admins
+        if (userRole === "ADMIN") {
+            const adminLinks = [
+                { to: "/dashboard", label: "Dashboard", icon: <FaGraduationCap /> },
+                { to: "/profile", label: "Profil", icon: <FaUser /> },
+                { to: "/stage-annee", label: "Années universitaires", icon: <FaCalendarAlt /> },                { to: "/stagiaires", label: "Stagiaires", icon: <FaGraduationCap /> },
+                { to: "/tuteurs", label: "Tuteurs", icon: <FaChalkboardTeacher /> },
+            ];
+
+            // Ajouter l'option "Créer Admin" seulement si l'utilisateur est superAdmin
+            if (isSuperAdmin) {
+                adminLinks.push({ to: "/admin/create", label: "Gestion des admins", icon: <FaUserShield /> });
+            }
+
+            // Ajouter paramètres à la fin pour tous les admins
+            adminLinks.push({ to: "/settings", label: "Paramètres", icon: <FaCog /> });
+
+            return adminLinks;
+        }
+
+        // Liens pour les stagiaires
+        else if (userRole === "STAGIAIRE") {
+            return [
+                { to: "/student-dashboard", label: "Mon stage", icon: <FaClipboardCheck /> },
+                { to: "/profile", label: "Profil", icon: <FaUser /> },
+                { to: "/settings", label: "Paramètres", icon: <FaCog /> }
+            ];
+        }
+
+        // Retourner un tableau vide si aucun rôle correspondant
+        return [];
+    };
+
+    const navLinks = getNavLinks();
 
     const handleLogout = () => {
         AuthService.logout();
@@ -97,13 +114,36 @@ export default function Sidebar() {
         ">
             {/* Logo */}
             <div className="flex items-center justify-center md:justify-start gap-3 p-5">
-                <span className="text-3xl font-black bg-[#F5F7FA] text-[#41729F] rounded-full px-3 py-2 shadow-md">E</span>
-                <span className="hidden md:block text-xl font-bold text-[#274472] tracking-wide">EvalStage</span>
-            </div>
+                <div className="relative">
+                    <div className="w-12 h-12 relative overflow-hidden rounded-xl shadow-lg">
+                        {/* Arrière-plan avec effet de superposition */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#41729F] to-[#274472]"></div>
 
-            {/* Date actuelle - Visible uniquement sur les écrans md et plus */}
-            <div className="hidden md:block px-5 mb-4 text-sm text-[#5885AF]">
-                {currentDate}
+                        {/* Icône d'évaluation/checklist */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="white" strokeWidth="2" strokeLinecap="round"
+                                 strokeLinejoin="round">
+                                <path d="M8 2v4"></path>
+                                <path d="M16 2v4"></path>
+                                <rect x="2" y="6" width="20" height="16" rx="2"></rect>
+                                <path d="M9 14l2 2 4-4"></path>
+                            </svg>
+                        </div>
+
+                        {/* Éléments décoratifs */}
+                        <div
+                            className="absolute top-0 right-0 w-6 h-6 bg-white/10 rounded-full transform translate-x-2 -translate-y-2"></div>
+                        <div
+                            className="absolute bottom-0 left-0 w-4 h-4 bg-white/10 rounded-full transform -translate-x-1 translate-y-1"></div>
+                    </div>
+                </div>
+
+                <div className="hidden md:flex flex-col">
+                    <span
+                        className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#274472] to-[#41729F] tracking-wide leading-tight">EvalStage</span>
+                    <span className="text-xs text-[#5885AF] font-medium tracking-wide">Gestion des stages</span>
+                </div>
             </div>
 
             {/* Navigation */}
@@ -127,8 +167,8 @@ export default function Sidebar() {
                                     <motion.span
                                         layoutId="sidebar-active"
                                         className="absolute inset-0 bg-[#B7C9E2] rounded-xl"
-                                        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                                        style={{ pointerEvents: "none" }}
+                                        transition={{type: "spring", stiffness: 500, damping: 30}}
+                                        style={{pointerEvents: "none"}}
                                     />
                                 )}
                                 <span className={`
@@ -151,7 +191,8 @@ export default function Sidebar() {
 
             {/* Infos utilisateur */}
             <div className="hidden md:flex items-center px-3 py-2 mb-2 gap-2 border-t border-[#D4E1F5] pt-3">
-                <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center text-[#41729F] font-bold">
+                <div
+                    className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center text-[#41729F] font-bold">
                     {getInitials()}
                 </div>
                 <div className="flex-1 truncate">
@@ -159,14 +200,15 @@ export default function Sidebar() {
                         {userInfo.nom} {userInfo.prenom}
                     </div>
                     <div className="text-xs text-[#5885AF]">
-                        {userRole === "ADMIN" ? "Administrateur" : "Stagiaire"}
+                        {userRole === "ADMIN" ? (isSuperAdmin ? "Super Admin" : "Administrateur") : "Stagiaire"}
                     </div>
                 </div>
             </div>
 
             {/* Version mobile de l'avatar (visible uniquement sur petit écran) */}
             <div className="md:hidden flex justify-center mb-2 pt-3 border-t border-[#D4E1F5]">
-                <div className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center text-[#41729F] font-bold">
+                <div
+                    className="w-10 h-10 rounded-full bg-[#F5F7FA] flex items-center justify-center text-[#41729F] font-bold">
                     {getInitials()}
                 </div>
             </div>
@@ -178,10 +220,10 @@ export default function Sidebar() {
                     justify-center md:justify-start bg-white/80 hover:bg-[#FFEBEE] shadow text-[#D32F2F] font-semibold
                     border border-[#FFD1D1] hover:text-[#B71C1C]
                 "
-                whileHover={{ scale: 1.05, x: 2 }}
+                whileHover={{scale: 1.05, x: 2}}
                 onClick={handleLogout}
             >
-                <FaSignOutAlt className="text-2xl" />
+                <FaSignOutAlt className="text-2xl"/>
                 <span className="hidden md:inline">Déconnexion</span>
             </motion.button>
         </aside>

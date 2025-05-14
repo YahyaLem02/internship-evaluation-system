@@ -4,7 +4,7 @@ import AppreciationForm from "../components/AppreciationForm";
 import axios from "axios";
 import { API_URL } from "../api";
 import { motion } from "framer-motion";
-import { FaExclamationTriangle, FaSpinner, FaCheckCircle } from "react-icons/fa";
+import { FaExclamationTriangle, FaSpinner, FaCheckCircle, FaThumbsUp, FaEnvelope, FaGraduationCap } from "react-icons/fa";
 
 export default function AppreciationFormPage() {
     const { token } = useParams();
@@ -41,9 +41,10 @@ export default function AppreciationFormPage() {
                 token
             });
             setSubmitSuccess(true);
+            // Délai augmenté pour laisser plus de temps pour lire le message
             setTimeout(() => {
                 navigate('/appreciation/success');
-            }, 5000);
+            }, 8000);
         } catch (err) {
             console.error("Erreur lors de la soumission:", err);
             setError(err.response?.data?.message || "Erreur lors de l'envoi de l'appréciation");
@@ -103,15 +104,41 @@ export default function AppreciationFormPage() {
         return (
             <div className="bg-gradient-to-b from-[#5885AF]/10 to-[#274472]/10 min-h-screen flex items-center justify-center">
                 <motion.div
-                    className="bg-white/90 rounded-2xl shadow-xl p-8 max-w-lg text-center"
+                    className="bg-white/90 rounded-2xl shadow-xl p-8 max-w-lg"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <FaCheckCircle className="text-green-500 text-4xl mx-auto mb-4" />
-                    <h2 className="text-2xl font-bold text-[#274472]">Appréciation envoyée avec succès!</h2>
-                    <p className="text-[#5885AF] mt-2">Merci d'avoir pris le temps de compléter cette évaluation.</p>
-                    <p className="text-[#5885AF] mt-1">Vous allez être redirigé dans quelques instants...</p>
+                    <div className="text-center">
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{
+                                duration: 0.5,
+                                type: "spring",
+                                stiffness: 200
+                            }}
+                            className="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-6"
+                        >
+                            <FaCheckCircle className="text-green-500 text-4xl" />
+                        </motion.div>
+
+                        <h2 className="text-2xl font-bold text-[#274472] mb-4">Merci pour votre appréciation !</h2>
+
+                        <p className="text-[#5885AF] mb-4">
+                            Votre évaluation a bien été reçue et sera précieuse pour l'accompagnement pédagogique
+                            de <span className="font-semibold">{initialStage?.etudiantPrenom} {initialStage?.etudiantNom}</span>.
+                        </p>
+
+                        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 text-left rounded-r">
+                            <div className="flex items-start">
+                                <FaGraduationCap className="text-blue-500 mr-2 mt-1 flex-shrink-0" />
+                                <p className="text-blue-800">
+                                    Le service pédagogique et le stagiaire pourront maintenant consulter votre appréciation dans leur espace personnel.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
             </div>
         );
@@ -129,10 +156,10 @@ export default function AppreciationFormPage() {
                     <h1 className="text-3xl font-bold text-[#274472]">Formulaire d'appréciation de stage</h1>
                     {initialStage?.etudiantNom && initialStage?.etudiantPrenom ? (
                         <p className="text-[#5885AF]">
-                            Évaluation pour l'étudiant : <span className="font-semibold">{initialStage.etudiantNom} {initialStage.etudiantPrenom}</span>
+                            Évaluation pour le stagiaire : <span className="font-semibold">{initialStage.etudiantNom} {initialStage.etudiantPrenom}</span>
                         </p>
                     ) : (
-                        <p className="text-[#5885AF] italic">Informations sur l'étudiant indisponibles.</p>
+                        <p className="text-[#5885AF] italic">Informations sur le stagiaire indisponibles.</p>
                     )}
                 </div>
 

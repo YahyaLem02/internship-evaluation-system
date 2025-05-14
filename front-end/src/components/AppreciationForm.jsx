@@ -890,10 +890,10 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                                 <FaUser className="mr-2" />Tuteur
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <div><span className="font-semibold">Nom :</span> {tuteur.nom}</div>
-                                <div><span className="font-semibold">Prénom :</span> {tuteur.prenom}</div>
-                                <div><span className="font-semibold">Email :</span> {tuteur.email}</div>
-                                <div><span className="font-semibold">Entreprise :</span> {tuteur.entreprise}</div>
+                                <div><span className="text-gray-600">Nom :</span> <span className="font-bold text-[#274472]">{tuteur.nom}</span></div>
+                                <div><span className="text-gray-600">Prénom :</span> <span className="font-bold text-[#274472]">{tuteur.prenom}</span></div>
+                                <div><span className="text-gray-600">Email :</span> <span className="text-[#41729F]">{tuteur.email}</span></div>
+                                <div><span className="text-gray-600">Entreprise :</span> <span className="font-semibold text-[#5885AF]">{tuteur.entreprise}</span></div>
                             </div>
                         </div>
 
@@ -902,12 +902,12 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                                 <FaBook className="mr-2" />Stage
                             </h3>
                             <div className="mb-2">
-                                <div className="font-semibold">Description :</div>
-                                <div className="text-[#41729F] mt-1">{stage.description}</div>
+                                <div className="text-gray-600">Description :</div>
+                                <div className="mt-1 italic bg-white p-2 rounded border-l-4 border-[#41729F]">{stage.description}</div>
                             </div>
                             <div>
-                                <div className="font-semibold">Objectif :</div>
-                                <div className="text-[#41729F] mt-1">{stage.objectif}</div>
+                                <div className="text-gray-600">Objectif :</div>
+                                <div className="mt-1 italic bg-white p-2 rounded border-l-4 border-[#41729F]">{stage.objectif}</div>
                             </div>
                         </div>
 
@@ -916,13 +916,22 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                                 <FaStar className="mr-2" />Évaluations
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <div><span className="font-semibold">Implication :</span> {evaluations.implication}</div>
-                                <div><span className="font-semibold">Ouverture :</span> {evaluations.ouverture}</div>
-                                <div><span className="font-semibold">Qualité :</span> {evaluations.qualite}</div>
+                                <div>
+                                    <span className="text-gray-600">Implication :</span>
+                                    <span className="ml-1 font-bold text-green-600">{evaluations.implication}</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Ouverture :</span>
+                                    <span className="ml-1 font-bold text-blue-600">{evaluations.ouverture}</span>
+                                </div>
+                                <div>
+                                    <span className="text-gray-600">Qualité :</span>
+                                    <span className="ml-1 font-bold text-purple-600">{evaluations.qualite}</span>
+                                </div>
                             </div>
                             <div className="mt-2">
-                                <div className="font-semibold">Observations :</div>
-                                <div className="text-[#41729F] mt-1">{evaluations.observations}</div>
+                                <div className="text-gray-600">Observations :</div>
+                                <div className="mt-1 italic bg-white p-2 rounded border-l-4 border-[#5885AF]">{evaluations.observations}</div>
                             </div>
                         </div>
 
@@ -932,13 +941,18 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                             </h3>
                             {competences.map((c, i) => (
                                 <div key={i} className="mb-4 pb-3 border-b border-[#C3CFE2] last:border-0 last:pb-0 last:mb-0">
-                                    <div className="font-semibold text-[#41729F]">{c.intitule} <span className="ml-2">(note : {c.note}/20)</span></div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="font-bold text-[#41729F]">{c.intitule}</span>
+                                        <span className="ml-2 bg-[#41729F] text-white font-bold px-3 py-1 rounded-full text-sm">
+                                {c.note}/20
+                            </span>
+                                    </div>
                                     <ul className="mt-2 space-y-1">
                                         {[...c.categories, ...(i === 3 ? c.extraCategories : [])].map((cat, j) => (
                                             cat.intitule && (
-                                                <li key={j} className="flex justify-between">
-                                                    <span>{cat.intitule}</span>
-                                                    <span>{cat.valeur}</span>
+                                                <li key={j} className="flex justify-between p-1 odd:bg-white/50 rounded">
+                                                    <span className="text-gray-700">{cat.intitule}</span>
+                                                    <span className="font-semibold text-[#41729F]">{cat.valeur}</span>
                                                 </li>
                                             )
                                         ))}
