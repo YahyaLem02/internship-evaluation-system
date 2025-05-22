@@ -22,7 +22,6 @@ public class Stage {
     @ManyToOne
     private StageAnnee stageAnnee;
 
-    // Relation avec Periode
     @OneToMany(mappedBy = "stage", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Periode> periodes;
 

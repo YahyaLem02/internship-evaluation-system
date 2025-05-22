@@ -46,7 +46,6 @@ export default function StagiairesList() {
     };
 
     useEffect(() => {
-        // Charger tous les stagiaires
         fetchStagiaires();
     }, []);
 

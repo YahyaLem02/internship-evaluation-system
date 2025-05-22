@@ -1,4 +1,3 @@
-// Dans un fichier séparé, par exemple axios-config.js
 import axios from 'axios';
 
 export const setupAxios = () => {
@@ -17,7 +16,6 @@ export const setupAxios = () => {
             // Ajouter un timeout
             config.timeout = 10000;
 
-            // Log de débogage
             console.log(`Requête ${config.method?.toUpperCase() || 'GET'} à ${config.url}`);
 
             return config;
@@ -61,7 +59,7 @@ export const setupAxios = () => {
 
                     // Rediriger après un délai
                     setTimeout(() => {
-                        window.location.href = '/login';
+                        window.location.href = '/';
                     }, 2000);
                 }
             }
@@ -70,5 +68,3 @@ export const setupAxios = () => {
         }
     );
 };
-
-// Puis dans votre index.js ou App.js

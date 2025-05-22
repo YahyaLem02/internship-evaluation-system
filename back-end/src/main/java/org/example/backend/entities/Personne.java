@@ -20,7 +20,6 @@ public abstract class Personne {
 
 
     public Personne() {
-        // Constructeur par défaut
     }
 
     public Personne(String nom, String prenom, String email, String motDePasse) {

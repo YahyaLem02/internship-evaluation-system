@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface AppreciationRepository extends JpaRepository<Appreciation, Long> {
     List<Appreciation> findByTuteurId(Long tuteurId);
-    // Remplacer la méthode findByPeriodeId par une requête JPQL personnalisée
     @Query("SELECT a FROM Appreciation a WHERE a.periode.id = :periodeId")
     List<Appreciation> findByPeriodeId(@Param("periodeId") Long periodeId);
     @Query("SELECT a FROM Appreciation a " +

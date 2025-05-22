@@ -14,7 +14,7 @@ export default function StagiaireDetail() {
     const [selectedAppreciation, setSelectedAppreciation] = useState(null);
 
     useEffect(() => {
-        axios.get(`${API_URL}/api/stagaire/${id}`) // Correction de stagaire à stagiaires
+        axios.get(`${API_URL}/api/stagaire/${id}`)
             .then(res => {
                 console.log("Données du stagiaire:", res.data);
                 setStagiaire(res.data);
@@ -428,8 +428,6 @@ function AppreciationModal({ isOpen, onClose, appreciation }) {
                             ))}
                         </div>
                     )}
-
-                    {/* Boutons d'action */}
                     <div className="flex justify-end gap-3 mt-6">
                         <button
                             onClick={() => window.print()}

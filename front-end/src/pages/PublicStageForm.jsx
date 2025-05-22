@@ -192,7 +192,7 @@ export default function PublicStageForm() {
                 <p className="text-gray-600 mb-6">Veuillez vérifier le lien et réessayer ou contacter l'administrateur.</p>
                 <button
                     className="px-6 py-2 rounded-xl bg-[#41729F] text-white font-semibold hover:bg-[#5885AF] transition"
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate("/")}
                 >
                     Aller à la page de connexion
                 </button>
@@ -220,7 +220,7 @@ export default function PublicStageForm() {
 
                 <button
                     className="w-full py-3 rounded-xl bg-[#41729F] text-white font-bold shadow hover:bg-[#5885AF] transition flex items-center justify-center"
-                    onClick={() => navigate("/login")}
+                    onClick={() => navigate("/")}
                 >
                     <FaSignInAlt className="mr-2" /> Se connecter
                 </button>

@@ -27,7 +27,7 @@ export default function AdminManagement() {
     useEffect(() => {
         const user = AuthService.getCurrentUser();
         setCurrentUser(user);
-        console.log("Current user:", user); // Vérifier les données utilisateur
+        console.log("Current user:", user);
     }, []);
 
     // Charger les administrateurs depuis l'API
@@ -35,7 +35,7 @@ export default function AdminManagement() {
         const fetchAdmins = async () => {
             try {
                 const response = await AuthService.getAdmins();
-                console.log("Admins loaded:", response.data); // Vérifier les données
+                console.log("Admins loaded:", response.data);
                 setAdmins(response.data);
             } catch (err) {
                 console.error("Erreur lors du chargement des administrateurs:", err);
@@ -71,7 +71,7 @@ export default function AdminManagement() {
             const newAdmin = await AuthService.registerAdmin(dataToSend);
 
             setSuccess(true);
-            setAdmins([newAdmin.data, ...admins]); // Ajouter le nouvel admin à la liste
+            setAdmins([newAdmin.data, ...admins]);
             setFormData({
                 nom: '',
                 prenom: '',
@@ -93,9 +93,8 @@ export default function AdminManagement() {
         }
     };
 
-    // Correction: Fonction débogué pour la gestion du clic sur le bouton de suppression
     const handleDeleteClick = (admin) => {
-        console.log("Delete click for admin:", admin); // Vérification de l'admin en console
+        console.log("Delete click for admin:", admin);
         if (!admin) {
             console.error("Admin is undefined");
             return;
@@ -131,7 +130,6 @@ export default function AdminManagement() {
             // Mettre à jour la liste des admins
             setAdmins(admins.filter(admin => (admin.id || admin._id) !== adminId));
 
-            // Fermer le modal après un court délai pour montrer le message de succès
             setTimeout(() => {
                 setIsDeleteModalOpen(false);
                 setAdminToDelete(null);
@@ -167,7 +165,6 @@ export default function AdminManagement() {
                 </div>
             )}
 
-            {/* Tableau des administrateurs avec bordures améliorées */}
             <div className="overflow-x-auto rounded-xl shadow-lg">
                 <table className="min-w-full border-collapse bg-white">
                     <thead>
@@ -186,7 +183,6 @@ export default function AdminManagement() {
                                 <td className="px-6 py-4 text-[#274472]">{admin.prenom || "—"}</td>
                                 <td className="px-6 py-4 text-[#274472]">{admin.email}</td>
                                 <td className="px-6 py-4 text-right">
-                                    {/* Bouton avec un onClick plus prononcé et une meilleure visibilité */}
                                     <button
                                         onClick={() => handleDeleteClick(admin)}
                                         className="inline-flex items-center justify-center text-red-500 hover:text-white bg-white hover:bg-red-500 rounded-lg px-3 py-1.5 transition-colors border border-red-500"

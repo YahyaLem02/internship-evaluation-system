@@ -65,9 +65,6 @@ public class AuthController {
         }
     }
 
-   //logout
-
-    // Ajoutez un endpoint de test pour vérifier l'accès au contrôleur
     @GetMapping("/test")
     public ResponseEntity<?> testEndpoint() {
         Map<String, String> response = new HashMap<>();

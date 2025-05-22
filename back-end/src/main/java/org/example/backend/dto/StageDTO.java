@@ -11,9 +11,8 @@ public class StageDTO {
     private String description;
     private String objectif;
     private String entreprise;
-    private Long stageAnneeId; // ID of the related StageAnnee
-    private Set<Long> stagiaireIds; // IDs of related stagiaires
-    // Constructor with all arguments
+    private Long stageAnneeId;
+    private Set<Long> stagiaireIds;
     public StageDTO(Long id, String description, String objectif, String entreprise, Long stageAnneeId, Set<Long> stagiaireIds) {
         this.id = id;
         this.description = description;
@@ -22,7 +21,6 @@ public class StageDTO {
         this.stageAnneeId = stageAnneeId;
         this.stagiaireIds = stagiaireIds;
     }
-    // Default constructor
     public StageDTO() {}
 
     public Long getId() {

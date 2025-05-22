@@ -47,9 +47,7 @@ public class AppreciationService {
         this.tuteurRepository = tuteurRepository;
     }
 
-    /**
-     * Enregistre une appréciation complète à partir des données du formulaire
-     */
+
     @Transactional
     public void saveAppreciation(AppreciationFormDTO form) {
         try {
@@ -122,7 +120,6 @@ public class AppreciationService {
                 } catch (Exception e) {
                     System.err.println("Erreur lors de la création d'une évaluation: " + e.getMessage());
                     e.printStackTrace();
-                    // Continue malgré l'erreur pour traiter les autres évaluations
                 }
             }
 
@@ -175,7 +172,6 @@ public class AppreciationService {
                             } catch (Exception e) {
                                 System.err.println("Erreur lors de la création d'une catégorie: " + e.getMessage());
                                 e.printStackTrace();
-                                // Continue malgré l'erreur pour traiter les autres catégories
                             }
                         }
                     } else {
@@ -184,7 +180,6 @@ public class AppreciationService {
                 } catch (Exception e) {
                     System.err.println("Erreur lors de la création d'une compétence: " + e.getMessage());
                     e.printStackTrace();
-                    // Continue malgré l'erreur pour traiter les autres compétences
                 }
             }
 
@@ -195,9 +190,7 @@ public class AppreciationService {
             throw new RuntimeException("Erreur lors de la sauvegarde de l'appréciation: " + e.getMessage(), e);
         }
     }
-    /**
-     * Vérifie si un token d'appréciation est valide
-     */
+
     public boolean isAppreciationTokenValid(String token) {
         return periodeRepository.findByAppreciationToken(token).isPresent();
     }

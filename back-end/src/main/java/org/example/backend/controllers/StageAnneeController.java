@@ -22,7 +22,6 @@ public class StageAnneeController {
     @Autowired
     private StageService stageService;
 
-    // Endpoint pour créer un StageAnnee
     @PostMapping("/add")
     public StageAnneeDTO createStageAnnee(@RequestBody StageAnneeDTO stageAnneeDTO) {
         return stageAnneeService.createStageAnnee(stageAnneeDTO);
@@ -38,19 +37,16 @@ public class StageAnneeController {
         return stageAnneeService.getAnneeUniversitaire();
     }
 
-    // Endpoint pour obtenir un StageAnnee par ID
     @GetMapping("/{id}")
     public StageAnneeDTO getStageAnnee(@PathVariable Long id) {
         return stageAnneeService.getStageAnnee(id);
     }
 
-    // Endpoint pour mettre à jour un StageAnnee par ID
     @PutMapping("/{id}")
     public StageAnneeDTO updateStageAnnee(@PathVariable Long id, @RequestBody StageAnneeDTO stageAnneeDTO) {
         return stageAnneeService.updateStageAnnee(id, stageAnneeDTO);
     }
 
-    // Endpoint pour supprimer un StageAnnee par ID
     @DeleteMapping("/{id}")
     public void deleteStageAnnee(@PathVariable Long id) {
         stageAnneeService.deleteStageAnnee(id);
@@ -58,14 +54,12 @@ public class StageAnneeController {
 
     @GetMapping("/token/{shareToken}")
 
-    // Endpoint pour obtenir un StageAnnee par token de partage
     public StageAnneeDTO getStageAnneeByToken(@PathVariable String shareToken) {
         StageAnnee sa = stageAnneeRepository.findByShareToken(shareToken)
                 .orElseThrow(() -> new RuntimeException("Not found"));
         return new StageAnneeDTO(sa.getId(), sa.getAnneeUniversitaire(), null, sa.getDescription(), sa.getRegles(), sa.getShareToken());
     }
 
-    // Endpoint pour récupérer les étudiants associés à une StageAnnee
     @GetMapping("/{id}/students")
     public List<StagiaireDetailDTO> getStudentsForStageAnnee(@PathVariable Long id) {
         return stageAnneeService

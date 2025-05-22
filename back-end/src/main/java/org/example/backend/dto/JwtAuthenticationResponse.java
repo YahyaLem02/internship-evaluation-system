@@ -10,7 +10,6 @@ public class JwtAuthenticationResponse {
 
     private Boolean isSuperAdmin = false;
 
-    // Constructeurs
     public JwtAuthenticationResponse() {
     }
 
@@ -34,7 +33,6 @@ public class JwtAuthenticationResponse {
         this.role = role;
         this.isSuperAdmin = isSuperAdmin;
     }
-    // Getters et setters
     public String getToken() {
         return token;
     }

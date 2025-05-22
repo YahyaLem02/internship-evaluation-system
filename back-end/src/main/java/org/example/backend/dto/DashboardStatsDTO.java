@@ -17,11 +17,9 @@ public class DashboardStatsDTO {
     private List<Map<String, Object>> stagiairesByInstitution;
     private List<Map<String, Object>> stageDistributionByMonth;
 
-    // Constructeur
     public DashboardStatsDTO() {
     }
 
-    // Getters et Setters
     public Long getTotalStagiaires() {
         return totalStagiaires;
     }

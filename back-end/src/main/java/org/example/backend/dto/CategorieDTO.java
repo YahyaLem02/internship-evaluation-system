@@ -11,11 +11,9 @@ public class CategorieDTO {
         this.valeur = valeur;
     }
 
-    // Constructeur par défaut
     public CategorieDTO() {
     }
 
-    // Getters et setters
     public String getIntitule() {
         return intitule;
     }

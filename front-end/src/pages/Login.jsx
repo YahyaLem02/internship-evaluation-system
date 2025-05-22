@@ -48,7 +48,6 @@ export default function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F7FA] to-[#C3CFE2]">
             <div className="w-full max-w-5xl bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden border border-[#D4E1F5] items-stretch">
-                {/* Formulaire - à gauche */}
                 <motion.div
                     initial={{ opacity: 0, x: -40 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -108,7 +107,6 @@ export default function Login() {
                         </motion.button>
                     </form>
                 </motion.div>
-                {/* Image - à droite */}
                 <motion.div
                     initial={{ opacity: 0, x: 40 }}
                     animate={{ opacity: 1, x: 0 }}

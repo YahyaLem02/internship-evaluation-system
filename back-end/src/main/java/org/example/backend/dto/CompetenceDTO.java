@@ -14,12 +14,10 @@ public class CompetenceDTO {
         this.categories = categories;
     }
 
-    // Constructeur par défaut
     public CompetenceDTO() {
     }
 
 
-    // Getters et setters
     public String getIntitule() {
         return intitule;
     }

@@ -9,22 +9,17 @@ import java.util.Set;
 public class StagiaireDTO extends PersonneDTO {
     private String institution;
     private Set<Long> stageIds;
-    // IDs of related stages
-
-    // Constructor with all arguments
     public StagiaireDTO(Long id, String nom, String prenom, String email, String motDePasse, String institution, Set<Long> stageIds) {
         super(id, nom, prenom, email, motDePasse);
         this.institution = institution;
         this.stageIds = stageIds;
     }
-// Constructor with required arguments
 public StagiaireDTO(Long id, String nom, String prenom, String email, String institution) {
-    super(id, nom, prenom, email, null); // Pass null for motDePasse as it's not provided
+    super(id, nom, prenom, email, null);
     this.institution = institution;
-    this.stageIds = null; // Initialize stageIds as null
+    this.stageIds = null;
 }
 
-    // Default constructor
     public StagiaireDTO() {
         super();
     }

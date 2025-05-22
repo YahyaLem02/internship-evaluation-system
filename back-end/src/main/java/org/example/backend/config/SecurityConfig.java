@@ -37,12 +37,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Correction de la dépréciation de cors()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                // Correction pour csrf disable
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authorize -> authorize
-                        // Routes publiques
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/stage/public/**").permitAll()
                         .requestMatchers("/api/stageAnnee/token/**").permitAll()
@@ -56,7 +53,6 @@ public class SecurityConfig {
                         // Routes pour les stagiaires
                         .requestMatchers("/api/stagaire/me").hasAuthority("STAGIAIRE")
                         .requestMatchers("/api/stagaire/{id}/change-password").hasAuthority("STAGIAIRE")
-                        // Correction de l'expression access avec AuthorizationDecision
                         .requestMatchers("/api/stagaire/{id}").access((authentication, context) ->
                                 new AuthorizationDecision(
                                         authentication.get().getAuthorities().stream()
@@ -102,8 +98,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // Changez "*" pour des origines spécifiques car allowCredentials est true
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Ajustez selon votre frontend
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Auth-Token"));

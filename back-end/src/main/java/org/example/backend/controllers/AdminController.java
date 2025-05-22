@@ -19,13 +19,11 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    // Endpoint to get all admins
     @GetMapping
     public ResponseEntity<List<AdminDTO>> getAllAdmins() {
         return ResponseEntity.ok(adminService.getAllAdmins());
     }
 
-    // Endpoint to get a specific admin by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getAdminById(@PathVariable Long id) {
         try {
@@ -38,11 +36,9 @@ public class AdminController {
         }
     }
 
-    // Endpoint to update admin information
     @PutMapping("/{id}")
     public ResponseEntity<?> updateAdmin(@PathVariable Long id, @RequestBody AdminDTO adminDTO) {
         try {
-            // Assurez-vous de ne pas permettre la mise à jour du mot de passe via cet endpoint
             adminDTO.setMotDePasse(null);
 
             AdminDTO updatedAdmin = adminService.updateAdmin(id, adminDTO);
@@ -54,7 +50,6 @@ public class AdminController {
         }
     }
 
-    // Endpoint to change admin password
     @PostMapping("/{id}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody PasswordChangeRequest request) {
         try {

@@ -12,14 +12,12 @@ public class PeriodeDTO {
     private Long idStagiaire;
     private LocalDate dateDebut;
     private LocalDate dateFin;
-    // Constructor with all arguments
     public PeriodeDTO(Long idStage, Long idStagiaire, LocalDate dateDebut, LocalDate dateFin) {
         this.idStage = idStage;
         this.idStagiaire = idStagiaire;
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
     }
-    // Default constructor
     public PeriodeDTO() {}
 
     public Long getIdStage() {

@@ -22,10 +22,8 @@ public class StageCreateDTO {
     private LocalDate dateDebut;
     private LocalDate dateFin;
 
-    // Default constructor
     public StageCreateDTO() {}
 
-    // Constructor with all arguments
     public StageCreateDTO(String shareToken, String nom, String prenom, String email, String motDePasse, String institution,
                           String description, String objectif, String entreprise, LocalDate dateDebut, LocalDate dateFin) {
         this.shareToken = shareToken;

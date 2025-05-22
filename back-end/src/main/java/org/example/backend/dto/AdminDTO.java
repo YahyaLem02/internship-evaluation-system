@@ -4,14 +4,12 @@ public class AdminDTO {
     private String nom;
     private String prenom;
     private String email;
-    private String motDePasse; // Notez que le champ s'appelle "motDePasse" et non "password"
+    private String motDePasse;
     private String role;
 
-    // Constructeur par défaut
     public AdminDTO() {
     }
 
-    // Getters et setters
     public String getNom() {
         return nom;
     }

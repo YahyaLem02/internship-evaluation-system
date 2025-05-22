@@ -12,7 +12,6 @@ public class Stagiaire extends Personne {
     private String NoEncodedPassword;
 
 
-    // Relation avec Periode
     @OneToMany(mappedBy = "stagiaire", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Periode> periodes;
 

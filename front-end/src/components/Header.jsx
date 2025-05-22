@@ -80,7 +80,7 @@ export default function Header({ title = "Dashboard" }) {
 
     const handleLogout = () => {
         AuthService.logout();
-        window.location.href = '/login';
+        window.location.href = '/';
     };
 
     return (
@@ -108,8 +108,6 @@ export default function Header({ title = "Dashboard" }) {
             </div>
 
             <div className="flex items-center gap-3">
-                {/* Barre de recherche */}
-
 
                 {/* Information utilisateur connecté (version desktop) */}
                 <div className="hidden md:flex items-center">

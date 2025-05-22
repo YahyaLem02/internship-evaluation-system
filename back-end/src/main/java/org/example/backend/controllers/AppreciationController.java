@@ -69,12 +69,10 @@ public class AppreciationController {
         try {
             System.out.println("Soumission du formulaire d'appréciation: " + form);
 
-            // Validation des données
             if (form.getToken() == null || form.getToken().isEmpty()) {
                 return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Token manquant"));
             }
 
-            // Validation des informations du tuteur
             if (form.getTuteur() == null) {
                 return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Informations du tuteur manquantes"));
             }
@@ -94,7 +92,6 @@ public class AppreciationController {
                 return ResponseEntity.badRequest().body(Collections.singletonMap("error", "Compétences manquantes"));
             }
 
-            // Sauvegarde de l'appréciation
             appreciationService.saveAppreciation(form);
 
             System.out.println("Appréciation soumise avec succès");

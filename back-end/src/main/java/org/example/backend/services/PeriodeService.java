@@ -26,7 +26,6 @@ public class PeriodeService {
     @Autowired
     private ModelMapper modelMapper;
 
-    // Récupérer toutes les périodes
     public List<PeriodeDTO> getAllPeriodes() {
         return periodeRepository.findAll().stream()
                 .map(p -> new PeriodeDTO(
@@ -38,25 +37,23 @@ public class PeriodeService {
                 .collect(Collectors.toList());
     }
 
-    // Récupérer une période spécifique par ID composite
     public PeriodeDTO getPeriode(Long idStagiaire, Long idStage) {
-        PeriodeId id = new PeriodeId(idStagiaire, idStage);  // Création de la clé composite
+        PeriodeId id = new PeriodeId(idStagiaire, idStage);
         Periode p = periodeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Periode not found"));
 
         return modelMapper.map(p, PeriodeDTO.class);
     }
 
-    // Créer une nouvelle période
+
     public PeriodeDTO createPeriode(PeriodeDTO dto) {
         Stagiaire stagiaire = stagiaireRepository.findById(dto.getIdStagiaire())
                 .orElseThrow(() -> new EntityNotFoundException("Stagiaire not found"));
         Stage stage = stageRepository.findById(dto.getIdStage())
                 .orElseThrow(() -> new EntityNotFoundException("Stage not found"));
 
-        // Créer une nouvelle période avec une clé composite
         Periode p = new Periode();
-        p.setId(new PeriodeId(dto.getIdStagiaire(), dto.getIdStage()));  // Créer la clé composite
+        p.setId(new PeriodeId(dto.getIdStagiaire(), dto.getIdStage()));
         p.setStagiaire(stagiaire);
         p.setStage(stage);
         p.setDateDebut(dto.getDateDebut());
@@ -66,13 +63,11 @@ public class PeriodeService {
         return modelMapper.map(saved, PeriodeDTO.class);
     }
 
-    // Mettre à jour une période existante
     public PeriodeDTO updatePeriode(Long idStagiaire, Long idStage, PeriodeDTO dto) {
-        PeriodeId id = new PeriodeId(idStagiaire, idStage);  // Créer l'ID composite
+        PeriodeId id = new PeriodeId(idStagiaire, idStage);
         Periode existing = periodeRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Periode not found"));
 
-        // Mettre à jour les dates
         existing.setDateDebut(dto.getDateDebut());
         existing.setDateFin(dto.getDateFin());
 
@@ -80,9 +75,8 @@ public class PeriodeService {
         return modelMapper.map(updated, PeriodeDTO.class);
     }
 
-    // Supprimer une période par ID composite
     public void deletePeriode(Long idStagiaire, Long idStage) {
-        PeriodeId id = new PeriodeId(idStagiaire, idStage);  // Créer l'ID composite
+        PeriodeId id = new PeriodeId(idStagiaire, idStage);
         if (!periodeRepository.existsById(id)) {
             throw new EntityNotFoundException("Periode not found");
         }

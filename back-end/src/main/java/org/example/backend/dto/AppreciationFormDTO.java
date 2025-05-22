@@ -12,7 +12,6 @@ public class AppreciationFormDTO {
     private List<EvaluationDTO> evaluations;
     private List<CompetenceDTO> competences;
 
-    // Getters et setters
     public String getToken() {
         return token;
     }
@@ -60,10 +59,8 @@ public class AppreciationFormDTO {
     public void setTuteur(TuteurDTO tuteur) {
         this.tuteur = tuteur;
     }
-    // Constructeur par défaut
     public AppreciationFormDTO() {
     }
-    // Constructeur avec tous les arguments
     public AppreciationFormDTO(String token, String stageDescription, String stageObjectif, List<EvaluationDTO> evaluations, List<CompetenceDTO> competences) {
         this.token = token;
         this.stageDescription = stageDescription;

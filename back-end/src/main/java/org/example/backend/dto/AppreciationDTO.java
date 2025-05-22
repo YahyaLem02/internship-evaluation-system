@@ -10,7 +10,6 @@ public class AppreciationDTO {
     private Set<Long> evaluationIds;
     private Set<Long> competenceIds;
 
-    // Constructor with all arguments
     public AppreciationDTO(Long id, Long tuteurId, Long stagiaireId, Long stageId, Set<Long> evaluationIds, Set<Long> competenceIds) {
         this.id = id;
         this.tuteurId = tuteurId;
@@ -20,7 +19,6 @@ public class AppreciationDTO {
         this.competenceIds = competenceIds;
     }
 
-    // Default constructor
     public AppreciationDTO() {}
 
     public AppreciationDTO(Long id, String nom, String prenom, String email) {

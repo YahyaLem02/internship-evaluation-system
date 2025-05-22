@@ -11,7 +11,6 @@ public class PersonneDTO {
     private String email;
     private String motDePasse;
 
-    // Constructor with all arguments
     public PersonneDTO(Long id, String nom, String prenom, String email, String motDePasse) {
         this.id = id;
         this.nom = nom;
@@ -19,7 +18,6 @@ public class PersonneDTO {
         this.email = email;
         this.motDePasse = motDePasse;
     }
-    // Default constructor
     public PersonneDTO() {}
 
     public Long getId() {

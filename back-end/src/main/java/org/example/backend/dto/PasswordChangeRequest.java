@@ -4,11 +4,9 @@ public class PasswordChangeRequest {
     private String currentPassword;
     private String newPassword;
 
-    // Constructeur par défaut
     public PasswordChangeRequest() {
     }
 
-    // Getters et setters
     public String getCurrentPassword() {
         return currentPassword;
     }
