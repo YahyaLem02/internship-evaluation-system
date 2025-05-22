@@ -69,8 +69,8 @@ public class AuthenticationService {
                             stagiaireOpt.get().getMotDePasse(),
                             stagiaireOpt.get().getInstitution()
                     );
-                    stagiaire.setId(stagiaireOpt.get().getId()); // Copy the ID
-                    stagiaire.setRole(Role.STAGIAIRE); // Explicitly set the role
+                    stagiaire.setId(stagiaireOpt.get().getId());
+                    stagiaire.setRole(Role.STAGIAIRE);
                     response.setUserId(stagiaire.getId());
                     response.setEmail(stagiaire.getEmail());
                     response.setNom(stagiaire.getNom());

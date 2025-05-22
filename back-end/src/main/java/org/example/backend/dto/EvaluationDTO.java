@@ -10,12 +10,10 @@ public class EvaluationDTO {
         this.categorie = categorie;
         this.valeur = valeur;
     }
-    // Constructeur par défaut
     public EvaluationDTO() {
     }
 
 
-    // Getters et setters
     public String getCategorie() {
         return categorie;
     }

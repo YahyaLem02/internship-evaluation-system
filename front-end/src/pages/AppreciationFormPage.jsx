@@ -41,7 +41,6 @@ export default function AppreciationFormPage() {
                 token
             });
             setSubmitSuccess(true);
-            // Délai augmenté pour laisser plus de temps pour lire le message
             setTimeout(() => {
                 navigate('/appreciation/success');
             }, 8000);

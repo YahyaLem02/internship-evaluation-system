@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import ProfileAdmin from "./pages/ProfileAdmin.jsx";
-import ProfileStagiaire from "./pages/ProfileStagiaire.jsx"; // Importez le nouveau composant de profil stagiaire
+import ProfileStagiaire from "./pages/ProfileStagiaire.jsx";
 import Login from "./pages/Login";
 import StageAnneeList from "./pages/StageAnneeList.jsx";
 import StageAnneeForm from "./pages/StageAnneeForm.jsx";
@@ -37,7 +37,7 @@ export default function App() {
         <BrowserRouter>
             <Routes>
                 {/* Routes publiques */}
-                <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Login />} />
                 <Route path="/stage-inscription/:token" element={<PublicStageForm />} />
                 <Route path="/appreciation/:token" element={<AppreciationFormPage />} />
 
@@ -57,7 +57,7 @@ export default function App() {
                         </ProtectedRoute>
                     } />
 
-                    {/* Nouvelle route pour le dashboard étudiant */}
+                    {/*Route pour le dashboard étudiant */}
                     <Route path="/student-dashboard" element={<StagiareDashboard />} />
 
                     {/* Routes pour les stages (admin uniquement) */}

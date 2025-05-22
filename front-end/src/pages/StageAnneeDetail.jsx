@@ -56,12 +56,10 @@ export default function StageAnneeDetail() {
     const [selectAllStudents, setSelectAllStudents] = useState(false);
 
     useEffect(() => {
-        // Load StageAnnee details
         axios.get(`${API_URL}/api/stageAnnee/${id}`)
             .then(res => setData(res.data))
             .catch(() => setErr("Erreur de chargement"));
 
-        // Load students with evaluations
         axios.get(`${API_URL}/api/stageAnnee/${id}/students-with-evaluations`)
             .then(res => {
                 console.log("Données reçues de l'API:", res.data);
@@ -102,7 +100,6 @@ export default function StageAnneeDetail() {
                 setSelectedStudents(evaluatedStudents.map(s => s.id));
             }
         } else if (selectedStudents.length === (activeTab === 'nonEvaluated' ? nonEvaluatedStudents.length : evaluatedStudents.length)) {
-            // Si tous sont sélectionnés manuellement, mettre selectAll à true
             setSelectAllStudents(true);
         }
     }, [selectAllStudents, activeTab]);

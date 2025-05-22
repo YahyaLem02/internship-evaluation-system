@@ -38,7 +38,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
 
         // Ajouter des informations supplémentaires au token
-        claims.put("sub", userDetails.getUsername()); // L'ID comme sujet
+        claims.put("sub", userDetails.getUsername());
 
         // Vous pourriez aussi stocker les autorités de l'utilisateur
         claims.put("authorities", userDetails.getAuthorities().stream()

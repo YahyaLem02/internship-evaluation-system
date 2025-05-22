@@ -9,13 +9,10 @@ import java.util.Objects;
 @Embeddable
 
 public class PeriodeId implements Serializable {
-    // Sans annotation @Id ou @GeneratedValue
     private Long stagiaireId;
     private Long stageId;
-    // Constructeur par défaut
     public PeriodeId() {
     }
-    // Constructeur avec tous les arguments
     public PeriodeId(Long stagiaireId, Long stageId) {
         this.stagiaireId = stagiaireId;
         this.stageId = stageId;

@@ -93,7 +93,7 @@ export default function Sidebar() {
 
     const handleLogout = () => {
         AuthService.logout();
-        window.location.href = '/login';
+        window.location.href = '/';
     };
 
     const getInitials = () => {

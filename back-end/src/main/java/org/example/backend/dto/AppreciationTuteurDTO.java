@@ -15,7 +15,6 @@ public class AppreciationTuteurDTO {
     private String stageDescription;
     private String stageObjectif;
 
-    // Constructeur par défaut pour Jackson
     public AppreciationTuteurDTO() {
     }
 
@@ -36,7 +35,6 @@ public class AppreciationTuteurDTO {
         this.stageObjectif = stageObjectif;
     }
 
-    // Getters et setters
     public Long getId() {
         return id;
     }

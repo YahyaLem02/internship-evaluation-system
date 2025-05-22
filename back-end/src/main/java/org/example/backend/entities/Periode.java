@@ -11,12 +11,12 @@ public class Periode {
     private PeriodeId id;
 
     @ManyToOne
-    @MapsId("stagiaireId") // Relie à la clé composite
+    @MapsId("stagiaireId")
     @JoinColumn(name = "id_stagiaire")
     private Stagiaire stagiaire;
 
     @ManyToOne
-    @MapsId("stageId") // Relie à la clé composite
+    @MapsId("stageId")
     @JoinColumn(name = "id_stage")
     private Stage stage;
 
@@ -27,7 +27,6 @@ public class Periode {
     private LocalDate dateFin;
     @Column(unique = true)
     private String appreciationToken;
-    // Add this to the `Periode` class
     @OneToMany(mappedBy = "periode", cascade = CascadeType.ALL)
     private List<Appreciation> appreciations;
 

@@ -48,7 +48,7 @@ const COMPETENCES_META = [
     },
     {
         intitule: "Compétences spécifiques au métier",
-        categories: [] // catégories libres
+        categories: []
     }
 ];
 
@@ -60,7 +60,7 @@ const fadeIn = {
 };
 
 export default function AppreciationForm({ initialStage, onSubmit }) {
-    const [step, setStep] = useState(1); // Commencer à l'étape 1 (Tuteur)
+    const [step, setStep] = useState(1);
     const [completedSteps, setCompletedSteps] = useState([]);
     const [errors, setErrors] = useState({});
     const [checkingEmail, setCheckingEmail] = useState(false);
@@ -385,9 +385,7 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
             variants={fadeIn}
             transition={{ duration: 0.3 }}
         >
-            {/* Stepper professionnel avec connexions et icônes */}
             <div className="flex mb-10 justify-between relative">
-                {/* Ligne de connexion sous les étapes */}
                 <div className="absolute top-7 left-0 h-1 bg-[#C3CFE2] w-full z-0"></div>
 
                 {stepLabels.map((label, i) => {
@@ -661,7 +659,6 @@ export default function AppreciationForm({ initialStage, onSubmit }) {
                 </motion.div>
             )}
 
-            {/* Les autres étapes restent inchangées */}
             {/* Étape 3 : Évaluation générale */}
             {step === 3 && (
                 <motion.div

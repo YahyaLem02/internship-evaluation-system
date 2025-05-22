@@ -1,4 +1,3 @@
-// AuthService.js
 import axios from "axios";
 import { API_URL } from "../api";
 
@@ -99,7 +98,7 @@ class AuthService {
                     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
                         console.log("Session expirée, déconnexion");
                         this.logout();
-                        window.location.href = '/login';
+                        window.location.href = '/';
                     }
                     return Promise.reject(error);
                 }

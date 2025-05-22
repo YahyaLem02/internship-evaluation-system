@@ -11,11 +11,8 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
     const isAuthenticated = AuthService.isAuthenticated();
 
     if (!isAuthenticated) {
-        return <Navigate to="/login" />;
+        return <Navigate to="/" />;
     }
-
-    // TODO: Si adminOnly est true, vérifier que l'utilisateur est un admin
-    // Ceci nécessiterait d'ajouter le rôle dans le token JWT ou de faire une requête supplémentaire
 
     return children;
 };

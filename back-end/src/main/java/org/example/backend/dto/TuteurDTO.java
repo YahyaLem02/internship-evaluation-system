@@ -9,14 +9,12 @@ import java.util.Set;
 public class TuteurDTO extends PersonneDTO {
     private String entreprise;
 
-    private Set<Long> appreciationIds; // IDs of related appreciations
-    // Constructor with all arguments
+    private Set<Long> appreciationIds;
     public TuteurDTO(Long id, String nom, String prenom, String email, String motDePasse, String entreprise, Set<Long> appreciationIds) {
         super(id, nom, prenom, email, motDePasse);
         this.entreprise = entreprise;
         this.appreciationIds = appreciationIds;
     }
-    // Default constructor
     public TuteurDTO() {
         super();
     }

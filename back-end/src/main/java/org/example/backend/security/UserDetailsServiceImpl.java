@@ -30,21 +30,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String userIdentifier) throws UsernameNotFoundException {
         System.out.println("Chargement de l'utilisateur avec l'identifiant: " + userIdentifier);
 
-        // Vérifier si c'est un email ou un ID numérique
         try {
-            // Si c'est un ID numérique (comme après extraction de token)
             if (userIdentifier.matches("\\d+")) {
                 Long id = Long.parseLong(userIdentifier);
                 System.out.println("Recherche par ID: " + id);
 
-                // Recherche par ID
                 Optional<Admin> adminById = adminRepository.findById(id);
                 if (adminById.isPresent()) {
                     Admin admin = adminById.get();
                     System.out.println("Admin trouvé par ID: " + admin.getId() + ", " + admin.getEmail());
 
                     return new User(
-                            String.valueOf(admin.getId()),  // Stocker l'ID comme identifiant
+                            String.valueOf(admin.getId()),
                             admin.getMotDePasse(),
                             Collections.singleton(new SimpleGrantedAuthority(admin.getRole().toString()))
                     );
@@ -56,7 +53,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     System.out.println("Stagiaire trouvé par ID: " + stagiaire.getId() + ", " + stagiaire.getEmail());
 
                     return new User(
-                            String.valueOf(stagiaire.getId()),  // Stocker l'ID comme identifiant
+                            String.valueOf(stagiaire.getId()),
                             stagiaire.getMotDePasse(),
                             Collections.singleton(new SimpleGrantedAuthority(stagiaire.getRole().toString()))
                     );
@@ -64,17 +61,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
                 throw new UsernameNotFoundException("Utilisateur non trouvé avec l'ID: " + id);
             } else {
-                // C'est un email (comme lors de l'authentification initiale)
                 System.out.println("Recherche par email: " + userIdentifier);
 
-                // Recherche par email
                 Optional<Admin> adminByEmail = adminRepository.findByEmail(userIdentifier);
                 if (adminByEmail.isPresent()) {
                     Admin admin = adminByEmail.get();
                     System.out.println("Admin trouvé par email: " + admin.getId() + ", " + admin.getEmail());
 
                     return new User(
-                            String.valueOf(admin.getId()),  // Stocker l'ID comme identifiant
+                            String.valueOf(admin.getId()),
                             admin.getMotDePasse(),
                             Collections.singleton(new SimpleGrantedAuthority(admin.getRole().toString()))
                     );
@@ -86,7 +81,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     System.out.println("Stagiaire trouvé par email: " + stagiaire.getId() + ", " + stagiaire.getEmail());
 
                     return new User(
-                            String.valueOf(stagiaire.getId()),  // Stocker l'ID comme identifiant
+                            String.valueOf(stagiaire.getId()),
                             stagiaire.getMotDePasse(),
                             Collections.singleton(new SimpleGrantedAuthority(stagiaire.getRole().toString()))
                     );
@@ -95,7 +90,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 throw new UsernameNotFoundException("Utilisateur non trouvé avec l'email: " + userIdentifier);
             }
         } catch (NumberFormatException e) {
-            // Si la conversion en ID échoue, considérer comme un email
             System.out.println("Format d'identifiant non reconnu: " + userIdentifier);
             throw new UsernameNotFoundException("Format d'identifiant non reconnu: " + userIdentifier);
         }

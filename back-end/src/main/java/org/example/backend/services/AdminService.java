@@ -20,34 +20,20 @@ public class AdminService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /**
-     * Récupère tous les administrateurs
-     * @return Une liste de tous les administrateurs
-     */
     public List<AdminDTO> getAllAdmins() {
         return adminRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Récupère un administrateur par son ID
-     * @param id L'ID de l'administrateur à récupérer
-     * @return Les informations de l'administrateur
-     */
     public AdminDTO getAdminById(Long id) {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Administrateur non trouvé"));
         return convertToDTO(admin);
     }
 
-    /**
-     * Crée un nouvel administrateur
-     * @param adminDTO Les informations du nouvel administrateur
-     */
     @Transactional
     public void createAdmin(AdminDTO adminDTO) {
-        // Vérifier si l'email existe déjà
         if (adminRepository.findByEmail(adminDTO.getEmail()).isPresent()) {
             throw new RuntimeException("Email déjà utilisé");
         }
@@ -61,18 +47,12 @@ public class AdminService {
         adminRepository.save(admin);
     }
 
-    /**
-     * Met à jour les informations d'un administrateur
-     * @param id L'ID de l'administrateur à mettre à jour
-     * @param adminDTO Les nouvelles informations
-     * @return Les informations mises à jour
-     */
+
     @Transactional
     public AdminDTO updateAdmin(Long id, AdminDTO adminDTO) {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Administrateur non trouvé"));
 
-        // Vérifier si l'email est déjà utilisé par un autre administrateur
         if (!admin.getEmail().equals(adminDTO.getEmail()) &&
                 adminRepository.findByEmail(adminDTO.getEmail()).isPresent()) {
             throw new RuntimeException("Email déjà utilisé par un autre administrateur");
@@ -86,18 +66,11 @@ public class AdminService {
         return convertToDTO(updatedAdmin);
     }
 
-    /**
-     * Change le mot de passe d'un administrateur
-     * @param id L'ID de l'administrateur
-     * @param currentPassword Le mot de passe actuel
-     * @param newPassword Le nouveau mot de passe
-     */
     @Transactional
     public void changePassword(Long id, String currentPassword, String newPassword) {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Administrateur non trouvé"));
 
-        // Vérifier que le mot de passe actuel est correct
         if (!passwordEncoder.matches(currentPassword, admin.getMotDePasse())) {
             throw new RuntimeException("Mot de passe actuel incorrect");
         }
@@ -106,10 +79,6 @@ public class AdminService {
         adminRepository.save(admin);
     }
 
-    /**
-     * Supprime un administrateur
-     * @param id L'ID de l'administrateur à supprimer
-     */
     @Transactional
     public void deleteAdmin(Long id) {
         if (!adminRepository.existsById(id)) {
@@ -118,17 +87,13 @@ public class AdminService {
         adminRepository.deleteById(id);
     }
 
-    /**
-     * Convertit une entité Admin en DTO
-     * @param admin L'entité Admin à convertir
-     * @return Le DTO correspondant
-     */
+
     private AdminDTO convertToDTO(Admin admin) {
         AdminDTO dto = new AdminDTO();
         dto.setNom(admin.getNom());
         dto.setPrenom(admin.getPrenom());
         dto.setEmail(admin.getEmail());
-        dto.setRole("ADMIN"); // Définir le rôle explicitement
+        dto.setRole("ADMIN");
         return dto;
     }
 }

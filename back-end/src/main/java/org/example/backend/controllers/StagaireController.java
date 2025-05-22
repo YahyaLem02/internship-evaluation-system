@@ -26,16 +26,6 @@ public class StagaireController {
         return stagiaireService.create(dto);
     }
 
-//    @GetMapping
-//    public List<StagiaireDTO> getAll() {
-//        return stagiaireService.findAll();
-//    }
-
-//    @GetMapping("/{id}")
-//    public Optional<StagiaireDTO> getById(@PathVariable Long id) {
-//        return stagiaireService.findById(id);
-//    }
-
     @PutMapping("/{id}")
     public StagiaireDTO update(@PathVariable Long id, @RequestBody StagiaireDTO dto) {
         return stagiaireService.updateStagiaire(id, dto);
@@ -74,7 +64,6 @@ public class StagaireController {
     @PostMapping("/{id}/change-password")
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody PasswordChangeRequest request, Authentication authentication) {
         try {
-            // Vérifier si l'utilisateur peut changer le mot de passe (soit lui-même, soit un administrateur)
             Long authenticatedUserId = Long.parseLong(authentication.getName());
             boolean isAdmin = authentication.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority().equals("ADMIN"));

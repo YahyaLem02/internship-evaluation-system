@@ -14,11 +14,9 @@ public class StageDetailDTO {
     private boolean evaluated;
     private List<AppreciationDisplayDto> appreciations;
 
-    // Constructeur par défaut pour Jackson
     public StageDetailDTO() {
     }
 
-    // Constructeur complet
     public StageDetailDTO(Long id, String entreprise, String description, String objectif,
                           String dateDebut, String dateFin, Long stageAnneeId,
                           String anneeUniversitaire, boolean evaluated, List<AppreciationDisplayDto> appreciations) {
@@ -34,7 +32,6 @@ public class StageDetailDTO {
         this.appreciations = appreciations;
     }
 
-    // Getters et setters
     public Long getId() {
         return id;
     }

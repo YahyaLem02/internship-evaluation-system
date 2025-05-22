@@ -13,7 +13,6 @@ public class SignInRequest {
         this.password = password;
     }
 
-    // Getters et setters
     public String getEmail() {
         return email;
     }

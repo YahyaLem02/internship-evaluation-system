@@ -620,8 +620,6 @@ export default function ProfileStagiaire() {
                             </div>
                         </motion.div>
                     )}
-
-                    {/* Section des appréciations (si disponibles) */}
                     {/* Section des appréciations (si disponibles) */}
                     {user.appreciations && user.appreciations.length > 0 && (
                         <motion.div

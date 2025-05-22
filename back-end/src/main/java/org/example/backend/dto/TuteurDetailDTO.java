@@ -12,11 +12,9 @@ public class TuteurDetailDTO {
     private int nbAppreciations;
     private List<AppreciationTuteurDTO> appreciations;
 
-    // Constructeur par défaut
     public TuteurDetailDTO() {
     }
 
-    // Constructeur avec tous les champs
     public TuteurDetailDTO(Long id, String nom, String prenom, String email, String entreprise,
                          int nbStagiaires, int nbAppreciations) {
         this.id = id;
@@ -28,7 +26,6 @@ public class TuteurDetailDTO {
         this.nbAppreciations = nbAppreciations;
     }
 
- // Constructeur avec tous les champs, y compris la liste des appréciations
     public TuteurDetailDTO(Long id, String nom, String prenom, String email, String entreprise,
                            int nbStagiaires, int nbAppreciations, List<AppreciationTuteurDTO> appreciations) {
         this.id = id;
@@ -39,10 +36,8 @@ public class TuteurDetailDTO {
         this.nbStagiaires = nbStagiaires;
         this.nbAppreciations = nbAppreciations;
         this.appreciations = appreciations;
-    }// Constructeur avec tous les champs, y compris la liste des appréciations
+    }
 
-
-    // Getters et setters
     public Long getId() {
         return id;
     }

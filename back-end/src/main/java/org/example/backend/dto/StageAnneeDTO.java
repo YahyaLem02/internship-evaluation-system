@@ -9,15 +9,14 @@ import java.util.Set;
 public class StageAnneeDTO {
     private Long id;
     private String anneeUniversitaire;
-    private Set<Long> stageIds; // IDs of related stages
+    private Set<Long> stageIds;
     private String description;
     private String regles;
     private String shareToken;
-    private Set<StagiaireDTO> stagiaires; // Liste des étudiants inscrits
+    private Set<StagiaireDTO> stagiaires;
 
 
 
-    // Constructor with all arguments
     public StageAnneeDTO(Long id, String anneeUniversitaire, Set<Long> stageIds, String description, String regles , String shareToken) {
         this.id = id;
         this.anneeUniversitaire = anneeUniversitaire;
@@ -27,7 +26,6 @@ public class StageAnneeDTO {
         this.shareToken = shareToken;
     }
 
-    // Default constructor
     public StageAnneeDTO() {}
 
     public Long getId() {

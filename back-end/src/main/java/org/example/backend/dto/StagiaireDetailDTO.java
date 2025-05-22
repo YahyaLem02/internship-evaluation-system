@@ -9,9 +9,9 @@ public class StagiaireDetailDTO {
     private String prenom;
     private String email;
     private String institution;
-    private String entreprise; // Entreprise associée au stage
-    private String dateDebut; // Période de début
-    private String dateFin;   // Période de fin
+    private String entreprise;
+    private String dateDebut;
+    private String dateFin;
     private String appreciationToken;
     private List<AppreciationDisplayDto> appreciations;
 
